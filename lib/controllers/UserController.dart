@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:mype_app/controllers/AuthController.dart';
 import '../models/User.dart';
+import 'package:flutter_libphonenumber/flutter_libphonenumber.dart';
+import 'package:devicelocale/devicelocale.dart';
 
 class UserController extends GetxController {
   init() {
@@ -24,10 +26,13 @@ class UserController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<bool> createNewUser(UserModel user) async {
+    String locale = await Devicelocale.currentLocale;
+
     try {
       await _firestore.collection("users").doc(user.id).set({
         "name": user.name,
         "email": user.email,
+        "phoneNumber": user.phoneNumber
       });
       return true;
     } catch (e) {
@@ -49,17 +54,28 @@ class UserController extends GetxController {
   }
 
   getUserByPhoneNumber(String phoneNumber) async {
+    String locale = await Devicelocale.currentLocale;
+
     try {
+      final parsedPhoneNumber = (await FlutterLibphonenumber()
+          .parse(phoneNumber, region: locale))["e164"];
       QuerySnapshot querySnapshot = await _firestore
           .collection("users")
-          .where("phoneNumber",
-              arrayContains: Get.find<UserController>().user.id)
+          .where("phoneNumber", isEqualTo: parsedPhoneNumber)
           .get();
       if (querySnapshot.size == 1)
         return UserModel.fromDocumentSnapshot(querySnapshot.docs[0]);
     } catch (e) {
       print(e);
-      rethrow;
     }
+  }
+
+  addFriend(String friendId) async {
+    user.friendIds.add(friendId);
+    _firestore
+        .collection("users")
+        .doc(user.id)
+        .set({"friendIds": user.friendIds}, SetOptions(merge: true));
+    update();
   }
 }

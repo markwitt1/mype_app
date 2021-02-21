@@ -5,7 +5,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mype_app/controllers/GroupsController.dart';
-import 'package:mype_app/models/Group.dart';
 import 'package:path_provider/path_provider.dart';
 import '../utils/openMarkerWindow.dart';
 import '../models/MypeMarker.dart';

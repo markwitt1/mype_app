@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:mype_app/controllers/GroupsController.dart';
 import '../../ImageUploader.dart';

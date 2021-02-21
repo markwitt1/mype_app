@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_libphonenumber/flutter_libphonenumber.dart';
 import 'package:get/get.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import '../controllers/AuthController.dart';
+import 'package:devicelocale/devicelocale.dart';
 
 class SignUp extends StatefulWidget {
   SignUp({Key key}) : super(key: key);
@@ -18,6 +18,20 @@ class _SignUpState extends State<SignUp> {
   final TextEditingController passwordController = TextEditingController();
   PhoneNumber phoneNumber = PhoneNumber();
   String _verifyCode;
+  String _countryCode;
+
+  @override
+  void initState() {
+    Devicelocale.currentLocale.then((value) {
+      setState(() {
+        _countryCode = value.split(
+          "_",
+        )[1];
+        phoneNumber = PhoneNumber(isoCode: _countryCode);
+      });
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +55,7 @@ class _SignUpState extends State<SignUp> {
               TextFormField(
                 decoration: InputDecoration(hintText: "Email"),
                 controller: emailController,
+                keyboardType: TextInputType.emailAddress,
               ),
               InternationalPhoneNumberInput(
                 onInputChanged: ((PhoneNumber value) {
@@ -48,8 +63,16 @@ class _SignUpState extends State<SignUp> {
                     phoneNumber = value;
                   });
                 }),
+                initialValue: phoneNumber,
+                onSaved: (val) => setState(() {
+                  phoneNumber = val;
+                }),
                 selectorConfig: SelectorConfig(
-                    selectorType: PhoneInputSelectorType.BOTTOM_SHEET),
+                    selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+                    countryComparator: (c1, c2) {
+                      if (c2.alpha2Code == _countryCode) return 1;
+                      return -1;
+                    }),
               ),
               SizedBox(
                 height: 40,
@@ -69,7 +92,8 @@ class _SignUpState extends State<SignUp> {
                           nameController.text,
                           emailController.text,
                           passwordController.text,
-                          credential);
+                          credential,
+                          phoneNumber.phoneNumber);
                     },
                     verificationFailed: (FirebaseAuthException e) {},
                     codeSent: (String verificationId, int resendToken) {
@@ -94,7 +118,8 @@ class _SignUpState extends State<SignUp> {
                                     nameController.text,
                                     emailController.text,
                                     passwordController.text,
-                                    phoneAuthCredential);
+                                    phoneAuthCredential,
+                                    phoneNumber.phoneNumber);
                                 Navigator.of(context, rootNavigator: true)
                                     .pop();
                               },

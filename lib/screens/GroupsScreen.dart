@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:mype_app/components/AddButton.dart';
 import 'package:mype_app/controllers/GroupsController.dart';
 import 'package:mype_app/controllers/UserController.dart';
-import './windows/GroupWindow.dart';
 
 class GroupsScreen extends StatefulWidget {
   GroupsScreen({Key key}) : super(key: key);

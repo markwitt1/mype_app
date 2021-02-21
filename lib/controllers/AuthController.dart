@@ -27,19 +27,18 @@ class AuthController extends GetxController {
   }
 
   void createUser(String name, String email, String password,
-      PhoneAuthCredential phoneAuthCredential) async {
+      PhoneAuthCredential phoneAuthCredential, String phoneNumber) async {
     final userController = Get.find<UserController>();
 
     try {
       UserCredential _authResult = await _auth.createUserWithEmailAndPassword(
           email: email.trim(), password: password);
-      _authResult.user.updatePhoneNumber(phoneAuthCredential);
-      //create user in database.dart
+      await _authResult.user.updatePhoneNumber(phoneAuthCredential);
       UserModel _user = UserModel(
-        id: _authResult.user.uid,
-        name: name,
-        email: _authResult.user.email,
-      );
+          id: _authResult.user.uid,
+          name: name,
+          email: _authResult.user.email,
+          phoneNumber: phoneNumber);
       if (await userController.createNewUser(_user)) {
         Get.find<UserController>().user = _user;
         Get.back();
