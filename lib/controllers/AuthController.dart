@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import './UserController.dart';
 import '../models/User.dart';
-import '../services/database.dart';
 
 class AuthController extends GetxController {
   FirebaseAuth _auth = FirebaseAuth.instance;
@@ -13,25 +12,35 @@ class AuthController extends GetxController {
   @override
   onInit() {
     super.onInit();
+    Get.put(UserController());
     _firebaseUser.bindStream(_auth.authStateChanges());
+    loadUser();
+  }
+
+  loadUser() {
+    final userController = Get.find<UserController>();
     if (_auth.currentUser != null) {
-      Database().getUser(_auth.currentUser.uid).then((user) {
+      userController.getUser(_auth.currentUser.uid).then((user) {
         Get.find<UserController>().user = user;
       });
     }
   }
 
-  void createUser(String name, String email, String password) async {
+  void createUser(String name, String email, String password,
+      PhoneAuthCredential phoneAuthCredential) async {
+    final userController = Get.find<UserController>();
+
     try {
       UserCredential _authResult = await _auth.createUserWithEmailAndPassword(
           email: email.trim(), password: password);
+      _authResult.user.updatePhoneNumber(phoneAuthCredential);
       //create user in database.dart
       UserModel _user = UserModel(
         id: _authResult.user.uid,
         name: name,
         email: _authResult.user.email,
       );
-      if (await Database().createNewUser(_user)) {
+      if (await userController.createNewUser(_user)) {
         Get.find<UserController>().user = _user;
         Get.back();
       }
@@ -45,11 +54,13 @@ class AuthController extends GetxController {
   }
 
   void login(String email, String password) async {
+    final userController = Get.find<UserController>();
+
     try {
       UserCredential _authResult = await _auth.signInWithEmailAndPassword(
           email: email.trim(), password: password);
       Get.find<UserController>().user =
-          await Database().getUser(_authResult.user.uid);
+          await userController.getUser(_authResult.user.uid);
     } catch (e) {
       Get.snackbar(
         "Error signing in",

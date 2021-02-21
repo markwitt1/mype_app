@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:mype_app/screens/Profile.dart';
+import 'package:mype_app/screens/GroupsScreen.dart';
 import 'FireMap.dart';
 
 class Home extends StatefulWidget {
@@ -13,12 +14,15 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int bottomBarIndex = 0;
 
-  List<Widget> screens = [FireMap(), Text("Groups"), Profile()];
+  List<Widget> screens = [FireMap(), GroupsScreen(), Profile()];
   @override
   Widget build(BuildContext context) {
     return Container(
       child: Scaffold(
-        body: screens[bottomBarIndex],
+        body: IndexedStack(
+          index: bottomBarIndex,
+          children: screens,
+        ),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: bottomBarIndex,
           onTap: (i) => setState(() {

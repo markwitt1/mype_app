@@ -3,14 +3,14 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:mype_app/controllers/GroupsController.dart';
-import '../ImageUploader.dart';
-import '../models/MypeMarker.dart';
+import '../../ImageUploader.dart';
+import '../../models/MypeMarker.dart';
 
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:dartz/dartz.dart' show Tuple2;
 
-import '../controllers/MarkersController.dart';
+import '../../controllers/MarkersController.dart';
 
 class MarkerWindow extends StatefulWidget {
   final String markerId;
@@ -61,11 +61,20 @@ class _MarkerWindowState extends State<MarkerWindow> {
     });
   }
 
+  MypeMarker _originalMarker;
+
+  @override
+  void initState() {
+    setState(() {
+      _originalMarker = markersController.markers[widget.markerId];
+    });
+
+    loadMarkerData(_originalMarker);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final originalMarker = markersController.markers[widget.markerId];
-
-    loadMarkerData(originalMarker);
     return Scaffold(
       appBar: AppBar(
         title: Text("Add Marker"),
@@ -152,7 +161,7 @@ class _MarkerWindowState extends State<MarkerWindow> {
                           if (_formKey.currentState.validate()) {
                             print(_formKey.currentState.toString());
                             final mypeMarker = new MypeMarker(
-                                marker: originalMarker.marker,
+                                marker: _originalMarker.marker,
                                 title: titleController.value.text,
                                 description: descriptionController.value.text,
                                 images: List.from(

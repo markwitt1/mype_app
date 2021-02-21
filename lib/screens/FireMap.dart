@@ -15,16 +15,12 @@ class FireMap extends StatefulWidget {
   _FireMapState createState() => _FireMapState();
 }
 
-class _FireMapState extends State<FireMap> {
+class _FireMapState extends State<FireMap> with AutomaticKeepAliveClientMixin {
   var mapController;
 
   Location location = new Location();
 
-  //BehaviorSubject<double> radius = BehaviorSubject();
   Stream<dynamic> query;
-
-  // Subscription
-  // StreamSubscription subscription;
 
   @override
   Widget build(BuildContext context) {
@@ -47,4 +43,7 @@ class _FireMapState extends State<FireMap> {
   _onMapCreated(GoogleMapController controller) {
     mapController = controller;
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

@@ -24,21 +24,24 @@ dependencies:
   flutter:
     sdk: flutter
   cloud_firestore: null
+  contacts_service: ^0.4.6
   cupertino_icons: ^1.0.0
   dartz: ^0.9.2
-  firebase_auth: 
+  firebase_auth: null
   firebase_core: null
   firebase_storage: null
   flutter_hooks: ^0.15.0
+  flutter_libphonenumber: 
   geoflutterfire: ^2.2.1
   get: ^3.24.0
   google_maps_flutter: ^1.0.6
-  hooks_riverpod: ^0.12.2
   image_picker: ^0.6.7+22
+  intl_phone_number_input: ^0.6.0
   location: ^3.2.4
   multi_select_flutter: ^3.1.6
   multiselect_formfield: ^0.1.5
   path_provider: ^1.6.27
+  permission_handler: ^5.1.0+2
   rxdart: ^0.24.1
   uuid: ^2.2.2
 

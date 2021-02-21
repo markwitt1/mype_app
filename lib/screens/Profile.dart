@@ -6,15 +6,20 @@ import 'package:mype_app/controllers/UserController.dart';
 class Profile extends GetWidget<AuthController> {
   @override
   Widget build(BuildContext context) {
+    Get.find<AuthController>().loadUser();
+    print(Get.find<AuthController>().user);
     return Scaffold(
       appBar: AppBar(
         title: Text("Profile"),
       ),
-      body: Get.find<UserController>().user.id != null
-          ? Column(
+      body: GetBuilder<UserController>(
+        init: UserController(),
+        builder: (_) {
+          if (_.user.id != null)
+            return Column(
               children: [
-                Text(Get.find<UserController>().user.name),
-                Text(Get.find<UserController>().user.email),
+                Text(_.user.name),
+                Text(_.user.email),
                 RaisedButton(
                   onPressed: () {
                     controller.signOut();
@@ -22,8 +27,13 @@ class Profile extends GetWidget<AuthController> {
                   child: Text("Sign out"),
                 )
               ],
-            )
-          : Text("lost"),
+            );
+          else {
+            Get.find<AuthController>().loadUser();
+            return CircularProgressIndicator();
+          }
+        },
+      ),
     );
   }
 }

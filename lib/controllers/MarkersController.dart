@@ -20,16 +20,9 @@ class MarkersController extends GetxController {
 
   @override
   onInit() async {
+    this.getMarkers();
     this.listen();
     super.onInit();
-  }
-
-  _markersFromSnapshot(QuerySnapshot snapshot) {
-    Map<String, MypeMarker> retVal = Map<String, MypeMarker>();
-    snapshot.docs.forEach((element) {
-      retVal[element.id] = MypeMarker.fromDocumentSnapshot(element);
-    });
-    return retVal;
   }
 
   listen() async {
@@ -38,7 +31,13 @@ class MarkersController extends GetxController {
         .collection("locations")
         .where("groupIds", arrayContainsAny: groupIds)
         .snapshots()
-        .map(_markersFromSnapshot);
+        .map((snapshot) {
+      Map<String, MypeMarker> retVal = Map<String, MypeMarker>();
+      for (final doc in snapshot.docs) {
+        retVal[doc.id] = MypeMarker.fromDocumentSnapshot(doc);
+      }
+      return retVal;
+    });
 
     markers.bindStream(locationsStream);
   }
@@ -50,7 +49,11 @@ class MarkersController extends GetxController {
         .where("groupIds", arrayContainsAny: groupIds)
         .get();
 
-    markers = _markersFromSnapshot(querySnapshot);
+    for (final doc in querySnapshot.docs) {
+      markers[doc.id] = MypeMarker.fromDocumentSnapshot(doc);
+    }
+
+    update();
   }
 
   addImage(Tuple2<String, File> tuple) {
