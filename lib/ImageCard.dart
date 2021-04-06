@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
 class ImageCard extends StatelessWidget {
-  const ImageCard({Key key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -27,13 +25,13 @@ class ImageCard extends StatelessWidget {
           ButtonBar(
             alignment: MainAxisAlignment.start,
             children: [
-              FlatButton(
+              TextButton(
                 onPressed: () {
                   // Perform some action
                 },
                 child: const Text('ACTION 1'),
               ),
-              FlatButton(
+              TextButton(
                 onPressed: () {
                   // Perform some action
                 },

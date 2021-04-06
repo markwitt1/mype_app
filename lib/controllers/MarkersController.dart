@@ -1,4 +1,4 @@
-import 'dart:io';
+/* import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -26,33 +26,37 @@ class MarkersController extends GetxController {
 
   listen() async {
     final groupIds = await Get.find<GroupsController>().getGroupIds();
-    Stream<Map<String, MypeMarker>> locationsStream = firestore
-        .collection("locations")
-        .where("groupIds", arrayContainsAny: groupIds)
-        .snapshots()
-        .map((snapshot) {
-      Map<String, MypeMarker> retVal = Map<String, MypeMarker>();
-      for (final doc in snapshot.docs) {
-        retVal[doc.id] = MypeMarker.fromDocumentSnapshot(doc);
-      }
-      return retVal;
-    });
+    if (groupIds.length > 0) {
+      Stream<Map<String, MypeMarker>> locationsStream = firestore
+          .collection("locations")
+          .where("groupIds", arrayContainsAny: groupIds)
+          .snapshots()
+          .map((snapshot) {
+        Map<String, MypeMarker> retVal = Map<String, MypeMarker>();
+        for (final doc in snapshot.docs) {
+          retVal[doc.id] = MypeMarker.fromDocumentSnapshot(doc);
+        }
+        return retVal;
+      });
 
-    markers.bindStream(locationsStream);
+      markers.bindStream(locationsStream);
+    }
   }
 
   getMarkers() async {
     final groupIds = await Get.find<GroupsController>().getGroupIds();
-    final querySnapshot = await firestore
-        .collection("locations")
-        .where("groupIds", arrayContainsAny: groupIds)
-        .get();
+    if (groupIds.length > 0) {
+      final querySnapshot = await firestore
+          .collection("locations")
+          .where("groupIds", arrayContainsAny: groupIds)
+          .get();
 
-    for (final doc in querySnapshot.docs) {
-      markers[doc.id] = MypeMarker.fromDocumentSnapshot(doc);
+      for (final doc in querySnapshot.docs) {
+        markers[doc.id] = MypeMarker.fromDocumentSnapshot(doc);
+      }
+
+      update();
     }
-
-    update();
   }
 
   addImage(Tuple2<String, File> tuple) {
@@ -111,4 +115,10 @@ class MarkersController extends GetxController {
     markers[res.id] = mypeMarker;
     update();
   }
+
+  clearUserMarker() {
+    markers.remove("user");
+    update();
+  }
 }
+ */

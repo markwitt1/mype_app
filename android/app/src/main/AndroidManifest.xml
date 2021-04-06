@@ -9,7 +9,7 @@
 
   <application
     android:name="io.flutter.app.FlutterApplication"
-    android:label="mype_app"
+    android:label="MYPE"
     android:icon="@mipmap/ic_launcher"
   >
     <meta-data

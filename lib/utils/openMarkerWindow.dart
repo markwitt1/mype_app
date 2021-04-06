@@ -1,4 +1,4 @@
-import 'package:get/get.dart';
+/* import 'package:get/get.dart';
 
 import '../screens/windows/MarkerWindow.dart';
 
@@ -7,3 +7,4 @@ openMarkerWindow(String markerId) {
     markerId: markerId,
   ));
 }
+ */

@@ -1,40 +1,59 @@
-/* import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:contacts_service/contacts_service.dart';
-import 'package:dartz/dartz.dart';
-import 'package:get/get.dart';
-import 'package:mype_app/controllers/AuthController.dart';
-import 'package:mype_app/models/User.dart';
-import '../models/User.dart';
-import 'package:flutter_libphonenumber/flutter_libphonenumber.dart';
-import 'package:devicelocale/devicelocale.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:contacts_service/contacts_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class UserController extends GetxController {
-  Rx<UserModel> _userModel = UserModel().obs;
-  RxMap<String, Tuple2<Contact, UserModel>> contactUserMap =
-      RxMap<String, Tuple2<Contact, UserModel>>();
-  RxMap<String, UserModel> friends = RxMap<String, UserModel>();
+import 'package:mype_app/general_providers.dart';
+import 'package:mype_app/models/user_model/user_model.dart';
+import 'package:mype_app/repositories/auth_repository.dart';
 
-  @override
-  onInit() async {
-    print("test");
-    getContacts();
+import 'custom_exception.dart';
 
-    super.onInit();
-  }
+abstract class BaseUserRepository {}
 
-  getFriends() async {
-    for (final id in _userModel.value.friendIds) {
-      final user = await getUser(id);
-      friends[id] = user;
+final userRepositoryProvider =
+    Provider<UserRepository>((ref) => UserRepository(ref.read));
+
+class UserRepository implements BaseUserRepository {
+  final Reader _read;
+
+  const UserRepository(this._read);
+
+  Future<User> getUser(String uid) async {
+    try {
+      DocumentSnapshot _doc = await _read(firebaseFirestoreProvider)
+          .collection("users")
+          .doc(uid)
+          .get();
+
+      return User.fromDocument(_doc);
+    } catch (e) {
+      print(e);
+      rethrow;
     }
-    update();
   }
 
-  UserModel get user => _userModel.value;
+  Future<Map<String, User>> getFriends() async {
+    final firebaseUser = _read(authRepositoryProvider).getCurrentUser();
+    if (firebaseUser != null) {
+      String userId = firebaseUser.uid;
+      final user = await getUser(userId);
+      Map<String, User> friends = Map();
+      for (final id in user.friendIds) {
+        final user = await getUser(id);
+        friends[id] = user;
+      }
+      return friends;
+    } else {
+      throw CustomException(message: "tried to get Friends but not logged in");
+    }
 
-  set user(UserModel value) {
+/*    x
+    }
+    update(); */
+  }
+
+/*   UserModel get user => _userModel.value;
+ */
+/*   set user(UserModel value) {
     this._userModel.value = value;
     getFriends();
     update();
@@ -42,11 +61,11 @@ class UserController extends GetxController {
 
   void clear() {
     _userModel.value = UserModel();
-  }
+  } */
 
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  Future<bool> createNewUser(UserModel user) async {
+/*   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+ */
+/*   Future<bool> createNewUser(UserModel user) async {
     String locale = await Devicelocale.currentLocale;
 
     try {
@@ -65,8 +84,10 @@ class UserController extends GetxController {
   Future<UserModel> getUser(String uid) async {
     print(uid);
     try {
-      DocumentSnapshot _doc =
-          await _firestore.collection("users").doc(uid).get();
+      DocumentSnapshot _doc = await _read(firebaseFirestoreProvider)
+          .collection("users")
+          .doc(uid)
+          .get();
 
       return UserModel.fromDocumentSnapshot(_doc);
     } catch (e) {
@@ -142,6 +163,5 @@ class UserController extends GetxController {
 
       update();
     }
-  }
+  } */
 }
- */

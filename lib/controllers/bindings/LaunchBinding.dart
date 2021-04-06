@@ -1,4 +1,4 @@
-import 'package:get/get.dart';
+/* import 'package:get/get.dart';
 import '../AuthController.dart';
 
 class LaunchBinding extends Bindings {
@@ -7,3 +7,4 @@ class LaunchBinding extends Bindings {
     Get.put<AuthController>(AuthController(), permanent: true);
   }
 }
+ */

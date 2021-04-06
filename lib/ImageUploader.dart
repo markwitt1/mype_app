@@ -1,4 +1,4 @@
-import 'dart:io';
+/* import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +9,7 @@ import 'package:path/path.dart' as p;
 class ImageUploader extends StatefulWidget {
   final addImage;
 
-  ImageUploader({Key key, @required this.addImage}) : super(key: key);
+  ImageUploader({Key? key, @required this.addImage}) : super(key: key);
 
   @override
   _UploaderState createState() => _UploaderState();
@@ -91,3 +91,4 @@ class _UploaderState extends State<ImageUploader> {
     }
   }
 }
+ */

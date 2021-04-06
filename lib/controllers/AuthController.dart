@@ -1,4 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
+/* import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import './UserController.dart';
 import '../models/User.dart';
@@ -26,29 +26,22 @@ class AuthController extends GetxController {
     }
   }
 
-  void createUser(String name, String email, String password,
+  Future<void> createUser(String name, String email, String password,
       PhoneAuthCredential phoneAuthCredential, String phoneNumber) async {
     final userController = Get.find<UserController>();
+    print("test");
 
-    try {
-      UserCredential _authResult = await _auth.createUserWithEmailAndPassword(
-          email: email.trim(), password: password);
-      await _authResult.user.updatePhoneNumber(phoneAuthCredential);
-      UserModel _user = UserModel(
-          id: _authResult.user.uid,
-          name: name,
-          email: _authResult.user.email,
-          phoneNumber: phoneNumber);
-      if (await userController.createNewUser(_user)) {
-        Get.find<UserController>().user = _user;
-        Get.back();
-      }
-    } catch (e) {
-      Get.snackbar(
-        "Error creating Account",
-        e.message,
-        snackPosition: SnackPosition.BOTTOM,
-      );
+    UserCredential _authResult = await _auth.createUserWithEmailAndPassword(
+        email: email.trim(), password: password);
+    await _authResult.user.updatePhoneNumber(phoneAuthCredential);
+    UserModel _user = UserModel(
+        id: _authResult.user.uid,
+        name: name,
+        email: _authResult.user.email,
+        phoneNumber: phoneNumber);
+    if (await userController.createNewUser(_user)) {
+      Get.find<UserController>().user = _user;
+      Get.back();
     }
   }
 
@@ -82,3 +75,4 @@ class AuthController extends GetxController {
     }
   }
 }
+ */
