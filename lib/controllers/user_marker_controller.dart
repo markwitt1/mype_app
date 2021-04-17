@@ -1,7 +1,5 @@
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mype_app/models/mype_marker/mype_marker.dart';
-import 'package:mype_app/utils/openMarkerWindow.dart';
 
 final userMarkerControllerProvider =
     StateNotifierProvider((ref) => UserMarkerController(ref.read));

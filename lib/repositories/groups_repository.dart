@@ -1,11 +1,7 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mype_app/general_providers.dart';
 import 'package:mype_app/models/group_model/group_model.dart';
-import 'package:mype_app/models/MypeMarker.dart';
 
 import 'custom_exception.dart';
 

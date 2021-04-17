@@ -3,7 +3,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:mype_app/general_providers.dart';
 import 'package:mype_app/models/user_model/user_model.dart';
-import 'package:mype_app/repositories/auth_repository.dart';
 
 import 'custom_exception.dart';
 
@@ -31,24 +30,25 @@ class UserRepository implements BaseUserRepository {
     }
   }
 
-  Future<Map<String, User>> getFriends() async {
-    final firebaseUser = _read(authRepositoryProvider).getCurrentUser();
-    if (firebaseUser != null) {
-      String userId = firebaseUser.uid;
-      final user = await getUser(userId);
-      Map<String, User> friends = Map();
-      for (final id in user.friendIds) {
-        final user = await getUser(id);
-        friends[id] = user;
-      }
-      return friends;
-    } else {
-      throw CustomException(message: "tried to get Friends but not logged in");
+  Future<Map<String, User>> getFriends(String userId) async {
+    final user = await getUser(userId);
+    Map<String, User> friends = Map();
+    for (final id in user.friendIds) {
+      final user = await getUser(id);
+      friends[id] = user;
     }
+    return friends;
+  }
 
-/*    x
+  Future<User?> createNewUser(User user) async {
+    try {
+      final res = await _read(firebaseFirestoreProvider)
+          .collection("users")
+          .add(user.toJson());
+      return user.copyWith(id: res.id);
+    } on FirebaseException catch (e) {
+      throw CustomException(message: e.message);
     }
-    update(); */
   }
 
 /*   UserModel get user => _userModel.value;
@@ -65,21 +65,7 @@ class UserRepository implements BaseUserRepository {
 
 /*   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
  */
-/*   Future<bool> createNewUser(UserModel user) async {
-    String locale = await Devicelocale.currentLocale;
-
-    try {
-      await _firestore.collection("users").doc(user.id).set({
-        "name": user.name,
-        "email": user.email,
-        "phoneNumber": user.phoneNumber
-      });
-      return true;
-    } catch (e) {
-      print(e);
-      return false;
-    }
-  }
+/*   
 
   Future<UserModel> getUser(String uid) async {
     print(uid);

@@ -6,9 +6,10 @@ part "mype_marker.freezed.dart";
 part "mype_marker.g.dart";
 
 @freezed
-abstract class MypeMarker with _$MypeMarker {
+ class MypeMarker with _$MypeMarker {
   const factory MypeMarker(
-      {String? id,
+      {
+      @Default("user") String id,
       @Default("") String title,
       @Default("") String description,
       required List<String> imageIds,

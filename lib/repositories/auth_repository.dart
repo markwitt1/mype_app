@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mype_app/repositories/user_repository.dart';
 
+import '../models/user_model/user_model.dart' as UserModel;
 import '../general_providers.dart';
 import 'custom_exception.dart';
 
@@ -48,16 +50,15 @@ class AuthRepository implements BaseAuthRepository {
   }
 
   Future<User?> createUser(String name, String email, String password,
-      PhoneAuthCredential phoneAuthCredential, String phoneNumber) async {
+      PhoneAuthCredential? phoneAuthCredential, String? phoneNumber) async {
     UserCredential _authResult = await _read(firebaseAuthProvider)
         .createUserWithEmailAndPassword(
             email: email.trim(), password: password);
-    await _authResult.user!.updatePhoneNumber(phoneAuthCredential);
+            if (phoneAuthCredential != null && phoneNumber != null){
+              await _authResult.user!.updatePhoneNumber(phoneAuthCredential);
+            }
+    await _read(userRepositoryProvider).createNewUser(UserModel.User(name:name,email: email,phoneNumber: phoneNumber!,friendIds: Set.identity()));
     return _read(firebaseAuthProvider).currentUser;
 
-/*     if (await userController.createNewUser(_user)) {
-      Get.find<UserController>().user = _user;
-      Get.back();
-    } */
   }
 }

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -55,25 +53,20 @@ class MarkerRepository {
     update();
   } */
 
-/*   addMarker(
+  addMarker(
     LatLng position,
-  ) {
-    markers["user"] = MypeMarker(
-      images: [],
-      groupIds: [],
-      marker: Marker(
-        markerId: MarkerId("user"),
-        position: position,
-        infoWindow: InfoWindow(
-            title: "new Marker",
-            snippet: 'Click to edit',
-            onTap: () => openMarkerWindow("user")),
-        icon: BitmapDescriptor.defaultMarker,
-      ),
-    );
-    update();
+  ) async {
+    final newMarker = MypeMarker(
+        imageIds: [],
+        groupIds: Set.identity(),
+        latitude: position.latitude,
+        longitude: position.longitude,);
+    final doc = await _read(firebaseFirestoreProvider)
+        .collection("markers")
+        .add(newMarker.toJson());
+    return newMarker.copyWith(id: doc.id);
   }
- */
+
 /*   updateMarker(String id, MypeMarker mypeMarker) async {
     if (id == "user") markers.remove("user");
     final res =
@@ -101,6 +94,7 @@ class MarkerRepository {
         throw CustomException(message: e.message);
       }
     }
+    
   }
 
 /*   clearUserMarker() {

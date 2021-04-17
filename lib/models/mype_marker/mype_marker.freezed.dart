@@ -21,7 +21,7 @@ class _$MypeMarkerTearOff {
   const _$MypeMarkerTearOff();
 
   _MypeMarker call(
-      {String? id,
+      {String id = "user",
       String title = "",
       String description = "",
       required List<String> imageIds,
@@ -49,7 +49,7 @@ const $MypeMarker = _$MypeMarkerTearOff();
 
 /// @nodoc
 mixin _$MypeMarker {
-  String? get id => throw _privateConstructorUsedError;
+  String get id => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
   List<String> get imageIds => throw _privateConstructorUsedError;
@@ -69,7 +69,7 @@ abstract class $MypeMarkerCopyWith<$Res> {
           MypeMarker value, $Res Function(MypeMarker) then) =
       _$MypeMarkerCopyWithImpl<$Res>;
   $Res call(
-      {String? id,
+      {String id,
       String title,
       String description,
       List<String> imageIds,
@@ -100,7 +100,7 @@ class _$MypeMarkerCopyWithImpl<$Res> implements $MypeMarkerCopyWith<$Res> {
       id: id == freezed
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
       title: title == freezed
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -136,7 +136,7 @@ abstract class _$MypeMarkerCopyWith<$Res> implements $MypeMarkerCopyWith<$Res> {
       __$MypeMarkerCopyWithImpl<$Res>;
   @override
   $Res call(
-      {String? id,
+      {String id,
       String title,
       String description,
       List<String> imageIds,
@@ -169,7 +169,7 @@ class __$MypeMarkerCopyWithImpl<$Res> extends _$MypeMarkerCopyWithImpl<$Res>
       id: id == freezed
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
       title: title == freezed
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -203,7 +203,7 @@ class __$MypeMarkerCopyWithImpl<$Res> extends _$MypeMarkerCopyWithImpl<$Res>
 /// @nodoc
 class _$_MypeMarker with DiagnosticableTreeMixin implements _MypeMarker {
   const _$_MypeMarker(
-      {this.id,
+      {this.id = "user",
       this.title = "",
       this.description = "",
       required this.imageIds,
@@ -214,8 +214,9 @@ class _$_MypeMarker with DiagnosticableTreeMixin implements _MypeMarker {
   factory _$_MypeMarker.fromJson(Map<String, dynamic> json) =>
       _$_$_MypeMarkerFromJson(json);
 
+  @JsonKey(defaultValue: "user")
   @override
-  final String? id;
+  final String id;
   @JsonKey(defaultValue: "")
   @override
   final String title;
@@ -299,7 +300,7 @@ class _$_MypeMarker with DiagnosticableTreeMixin implements _MypeMarker {
 
 abstract class _MypeMarker implements MypeMarker {
   const factory _MypeMarker(
-      {String? id,
+      {String id,
       String title,
       String description,
       required List<String> imageIds,
@@ -311,7 +312,7 @@ abstract class _MypeMarker implements MypeMarker {
       _$_MypeMarker.fromJson;
 
   @override
-  String? get id => throw _privateConstructorUsedError;
+  String get id => throw _privateConstructorUsedError;
   @override
   String get title => throw _privateConstructorUsedError;
   @override
