@@ -10,6 +10,7 @@ part "group_model.g.dart";
   const factory Group(
       {String? id,
       required String name,
+      @Default("") String description,
       required Set<String> userIds}) = _Group;
 
   factory Group.fromJson(Map<String, dynamic> json) => _$GroupFromJson(json);

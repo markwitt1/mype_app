@@ -21,10 +21,14 @@ class _$GroupTearOff {
   const _$GroupTearOff();
 
   _Group call(
-      {String? id, required String name, required Set<String> userIds}) {
+      {String? id,
+      required String name,
+      String description = "",
+      required Set<String> userIds}) {
     return _Group(
       id: id,
       name: name,
+      description: description,
       userIds: userIds,
     );
   }
@@ -41,6 +45,7 @@ const $Group = _$GroupTearOff();
 mixin _$Group {
   String? get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
+  String get description => throw _privateConstructorUsedError;
   Set<String> get userIds => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -52,7 +57,7 @@ mixin _$Group {
 abstract class $GroupCopyWith<$Res> {
   factory $GroupCopyWith(Group value, $Res Function(Group) then) =
       _$GroupCopyWithImpl<$Res>;
-  $Res call({String? id, String name, Set<String> userIds});
+  $Res call({String? id, String name, String description, Set<String> userIds});
 }
 
 /// @nodoc
@@ -67,6 +72,7 @@ class _$GroupCopyWithImpl<$Res> implements $GroupCopyWith<$Res> {
   $Res call({
     Object? id = freezed,
     Object? name = freezed,
+    Object? description = freezed,
     Object? userIds = freezed,
   }) {
     return _then(_value.copyWith(
@@ -77,6 +83,10 @@ class _$GroupCopyWithImpl<$Res> implements $GroupCopyWith<$Res> {
       name: name == freezed
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      description: description == freezed
+          ? _value.description
+          : description // ignore: cast_nullable_to_non_nullable
               as String,
       userIds: userIds == freezed
           ? _value.userIds
@@ -91,7 +101,7 @@ abstract class _$GroupCopyWith<$Res> implements $GroupCopyWith<$Res> {
   factory _$GroupCopyWith(_Group value, $Res Function(_Group) then) =
       __$GroupCopyWithImpl<$Res>;
   @override
-  $Res call({String? id, String name, Set<String> userIds});
+  $Res call({String? id, String name, String description, Set<String> userIds});
 }
 
 /// @nodoc
@@ -107,6 +117,7 @@ class __$GroupCopyWithImpl<$Res> extends _$GroupCopyWithImpl<$Res>
   $Res call({
     Object? id = freezed,
     Object? name = freezed,
+    Object? description = freezed,
     Object? userIds = freezed,
   }) {
     return _then(_Group(
@@ -117,6 +128,10 @@ class __$GroupCopyWithImpl<$Res> extends _$GroupCopyWithImpl<$Res>
       name: name == freezed
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      description: description == freezed
+          ? _value.description
+          : description // ignore: cast_nullable_to_non_nullable
               as String,
       userIds: userIds == freezed
           ? _value.userIds
@@ -130,7 +145,11 @@ class __$GroupCopyWithImpl<$Res> extends _$GroupCopyWithImpl<$Res>
 
 /// @nodoc
 class _$_Group with DiagnosticableTreeMixin implements _Group {
-  const _$_Group({this.id, required this.name, required this.userIds});
+  const _$_Group(
+      {this.id,
+      required this.name,
+      this.description = "",
+      required this.userIds});
 
   factory _$_Group.fromJson(Map<String, dynamic> json) =>
       _$_$_GroupFromJson(json);
@@ -139,12 +158,15 @@ class _$_Group with DiagnosticableTreeMixin implements _Group {
   final String? id;
   @override
   final String name;
+  @JsonKey(defaultValue: "")
+  @override
+  final String description;
   @override
   final Set<String> userIds;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'Group(id: $id, name: $name, userIds: $userIds)';
+    return 'Group(id: $id, name: $name, description: $description, userIds: $userIds)';
   }
 
   @override
@@ -154,6 +176,7 @@ class _$_Group with DiagnosticableTreeMixin implements _Group {
       ..add(DiagnosticsProperty('type', 'Group'))
       ..add(DiagnosticsProperty('id', id))
       ..add(DiagnosticsProperty('name', name))
+      ..add(DiagnosticsProperty('description', description))
       ..add(DiagnosticsProperty('userIds', userIds));
   }
 
@@ -165,6 +188,9 @@ class _$_Group with DiagnosticableTreeMixin implements _Group {
                 const DeepCollectionEquality().equals(other.id, id)) &&
             (identical(other.name, name) ||
                 const DeepCollectionEquality().equals(other.name, name)) &&
+            (identical(other.description, description) ||
+                const DeepCollectionEquality()
+                    .equals(other.description, description)) &&
             (identical(other.userIds, userIds) ||
                 const DeepCollectionEquality().equals(other.userIds, userIds)));
   }
@@ -174,6 +200,7 @@ class _$_Group with DiagnosticableTreeMixin implements _Group {
       runtimeType.hashCode ^
       const DeepCollectionEquality().hash(id) ^
       const DeepCollectionEquality().hash(name) ^
+      const DeepCollectionEquality().hash(description) ^
       const DeepCollectionEquality().hash(userIds);
 
   @JsonKey(ignore: true)
@@ -191,6 +218,7 @@ abstract class _Group implements Group {
   const factory _Group(
       {String? id,
       required String name,
+      String description,
       required Set<String> userIds}) = _$_Group;
 
   factory _Group.fromJson(Map<String, dynamic> json) = _$_Group.fromJson;
@@ -199,6 +227,8 @@ abstract class _Group implements Group {
   String? get id => throw _privateConstructorUsedError;
   @override
   String get name => throw _privateConstructorUsedError;
+  @override
+  String get description => throw _privateConstructorUsedError;
   @override
   Set<String> get userIds => throw _privateConstructorUsedError;
   @override

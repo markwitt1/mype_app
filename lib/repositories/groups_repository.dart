@@ -16,10 +16,10 @@ class GroupsRepository {
   createGroup(Group group) async {
     //users.add(Get.find<UserController>().user);
     try {
-      final document = await _read(firebaseFirestoreProvider)
+      final doc = await _read(firebaseFirestoreProvider)
           .collection("groups")
           .add(group.toJson());
-      return document;
+      return group.copyWith(id:doc.id);
     } on FirebaseException catch (e) {
       throw CustomException(message: e.message);
     }

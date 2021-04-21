@@ -9,7 +9,7 @@ part "mype_marker.g.dart";
  class MypeMarker with _$MypeMarker {
   const factory MypeMarker(
       {
-      @Default("user") String id,
+    String? id,
       @Default("") String title,
       @Default("") String description,
       required List<String> imageIds,

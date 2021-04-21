@@ -16,14 +16,13 @@ class UserRepository implements BaseUserRepository {
 
   const UserRepository(this._read);
 
-  Future<User> getUser(String uid) async {
+  Future<User?> getUser(String uid) async {
     try {
       DocumentSnapshot _doc = await _read(firebaseFirestoreProvider)
           .collection("users")
           .doc(uid)
           .get();
-
-      return User.fromDocument(_doc);
+      if (_doc.exists) return User.fromDocument(_doc);
     } catch (e) {
       print(e);
       rethrow;
@@ -33,21 +32,57 @@ class UserRepository implements BaseUserRepository {
   Future<Map<String, User>> getFriends(String userId) async {
     final user = await getUser(userId);
     Map<String, User> friends = Map();
-    for (final id in user.friendIds) {
-      final user = await getUser(id);
-      friends[id] = user;
-    }
-    return friends;
+    if (user != null) {
+      for (final id in user.friendIds) {
+        final user = await getUser(id);
+        friends[id] = user!;
+      }
+      return friends;
+    } else
+      return {};
   }
 
   Future<User?> createNewUser(User user) async {
     try {
-      final res = await _read(firebaseFirestoreProvider)
+      await _read(firebaseFirestoreProvider)
           .collection("users")
-          .add(user.toJson());
-      return user.copyWith(id: res.id);
+          .doc(user.id)
+          .set(user.toJson());
+      return user;
     } on FirebaseException catch (e) {
       throw CustomException(message: e.message);
+    }
+  }
+
+  Future<User?> updateUser(User user) async {
+    if (user.id == null) {
+      throw new CustomException(message: "User doesn't have ID");
+    } else {
+      try {
+        await _read(firebaseFirestoreProvider)
+            .collection("users")
+            .doc(user.id)
+            .set(user.toJson());
+        return user;
+      } on FirebaseException catch (e) {
+        throw CustomException(message: e.message);
+      }
+    }
+  }
+
+  Future<User?> getUserByPhoneNumber(String phoneNumber) async {
+    try {
+      QuerySnapshot querySnapshot = await _read(firebaseFirestoreProvider)
+          .collection("users")
+          .where("phoneNumber", isEqualTo: phoneNumber)
+          .get();
+      if (querySnapshot.size == 1)
+        return User.fromDocument(querySnapshot.docs[0]);
+      else {
+        return null;
+      }
+    } catch (e) {
+      print(e);
     }
   }
 

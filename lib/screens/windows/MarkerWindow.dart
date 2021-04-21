@@ -1,11 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:form_builder_image_picker/form_builder_image_picker.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mype_app/controllers/groups_controller.dart';
+import 'package:mype_app/controllers/images_controller.dart';
 import 'package:mype_app/controllers/markers_controller.dart';
+import 'package:mype_app/models/group_model/group_model.dart';
 import 'package:mype_app/models/mype_marker/mype_marker.dart';
-
-
 
 class MarkerWindow extends HookWidget {
   final MypeMarker mypeMarker;
@@ -16,31 +20,84 @@ class MarkerWindow extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final markersController = useProvider(markersControllerProvider);
-    final values = _fbKey.currentState!.value;
-    return FormBuilder(
-      key: _fbKey,
-      child: Column(
-        children: [
-          FormBuilderTextField(
-            name: "title",
-            decoration: InputDecoration(labelText: "Title"),
-            initialValue: mypeMarker.title,
-          ),
-          FormBuilderTextField(
-            name: "description",
-            decoration: InputDecoration(labelText: "Description"),
-            initialValue: mypeMarker.description,
-          ),
-          ElevatedButton(
-              onPressed: () {
-                markersController.updateMarker(
-                    mypeMarker.id ,
-                    mypeMarker.copyWith(
-                        title: values["title"],
-                        description: values["description"]));
-              },
-              child: Text("Submit"))
-        ],
+    final groups = useProvider(groupsControllerProvider.state);
+    final images = useProvider(imagesControllerProvider.state);
+    final imagesController = useProvider(imagesControllerProvider);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Edit Marker"),
+      ),
+      body: FormBuilder(
+        key: _fbKey,
+        child: Column(
+          children: [
+            FormBuilderTextField(
+              name: "title",
+              decoration: InputDecoration(labelText: "Title"),
+              initialValue: mypeMarker.title,
+            ),
+            FormBuilderTextField(
+              name: "description",
+              decoration: InputDecoration(labelText: "Description"),
+              initialValue: mypeMarker.description,
+            ),
+            FormBuilderFilterChip(
+              name: "groups",
+              options: groups.values
+                  .map((group) => FormBuilderFieldOption(
+                        value: group,
+                        child: Text(group.name),
+                      ))
+                  .toList(),
+              initialValue: groups.values
+                  .where((group) => mypeMarker.groupIds.contains(group.id))
+                  .toList(),
+            ),
+            FutureBuilder(
+                future: imagesController.sync(),
+                builder: (_, snapshot) {
+                  List<File> imageFiles = [];
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    for (final imageId in mypeMarker.imageIds) {
+                      if (images[imageId] != null) {
+                        imageFiles.add(images[imageId]!.file!);
+                      } else
+                        imagesController.sync();
+                    }
+
+                    return FormBuilderImagePicker(
+                      initialValue: imageFiles,
+                      name: "images",
+                    );
+                  } else
+                    return CircularProgressIndicator();
+                }),
+            ElevatedButton(
+                onPressed: () {
+                  if (_fbKey.currentState?.value != null &&
+                      _fbKey.currentState!.saveAndValidate()) {
+                    print(_fbKey.currentState!.value);
+
+                    final newMarker = mypeMarker.copyWith(
+                      title: _fbKey.currentState!.value["title"],
+                      description: _fbKey.currentState!.value["description"],
+                      groupIds:
+                          (_fbKey.currentState!.value["groups"] as List<Group>)
+                              .where((group) => group.id != null)
+                              .map((group) => group.id!)
+                              .toSet(),
+                    );
+                    if (mypeMarker.id == null) {
+                      markersController.addMarker(newMarker);
+                    } else {
+                      markersController.updateMarker(mypeMarker.id!, newMarker);
+                    }
+                  }
+                  Navigator.of(context).pop(true);
+                },
+                child: Text("Submit"))
+          ],
+        ),
       ),
     );
   }

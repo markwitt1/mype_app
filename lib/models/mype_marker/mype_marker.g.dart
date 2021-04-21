@@ -8,7 +8,7 @@ part of 'mype_marker.dart';
 
 _$_MypeMarker _$_$_MypeMarkerFromJson(Map<String, dynamic> json) {
   return _$_MypeMarker(
-    id: json['id'] as String? ?? 'user',
+    id: json['id'] as String?,
     title: json['title'] as String? ?? '',
     description: json['description'] as String? ?? '',
     imageIds:

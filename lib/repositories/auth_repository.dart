@@ -33,7 +33,7 @@ class AuthRepository implements BaseAuthRepository {
   @override
   Future<void> signIn(String email, String password) async {
     try {
-      UserCredential _authResult = await _read(firebaseAuthProvider)
+      await _read(firebaseAuthProvider)
           .signInWithEmailAndPassword(email: email.trim(), password: password);
     } on FirebaseAuthException catch (e) {
       throw CustomException(message: e.message);
@@ -57,7 +57,7 @@ class AuthRepository implements BaseAuthRepository {
             if (phoneAuthCredential != null && phoneNumber != null){
               await _authResult.user!.updatePhoneNumber(phoneAuthCredential);
             }
-    await _read(userRepositoryProvider).createNewUser(UserModel.User(name:name,email: email,phoneNumber: phoneNumber!,friendIds: Set.identity()));
+    await _read(userRepositoryProvider).createNewUser(UserModel.User(id:_authResult.user!.uid, name:name,email: email,phoneNumber: phoneNumber!,friendIds: Set.identity()));
     return _read(firebaseAuthProvider).currentUser;
 
   }

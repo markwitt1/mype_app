@@ -2,8 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart' hide Router;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mype_app/screens/Home.dart';
 import 'package:mype_app/screens/SignUp.dart';
-import './screens/FireMap.dart';
 import 'controllers/auth_controller.dart';
 
 void main() async {
@@ -25,22 +25,8 @@ class HomeScreen extends HookWidget {
     final firebaseUser = useProvider(authControllerProvider.state);
     print(firebaseUser);
     if (firebaseUser != null) {
-      return FireMap();
+      return Home();
     }
     return SignUp();
   }
 }
-/* 
-class MyApp extends StatefulWidget {
-  MyApp({Key key}) : super(key: key);
-
-  @override
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  @override
-  Widget build(BuildContext context) {
-    return GetMaterialApp(initialBinding: LaunchBinding(), home: Root());
-  }
-} */

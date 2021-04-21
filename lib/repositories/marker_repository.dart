@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mype_app/general_providers.dart';
 import 'package:mype_app/models/mype_marker/mype_marker.dart';
@@ -16,18 +15,23 @@ class MarkerRepository {
 
   Stream<QuerySnapshot> markersStream(Set<String> groupIds) =>
       _read(firebaseFirestoreProvider)
-          .collection("locations")
+          .collection("markers")
           .where("groupIds", arrayContainsAny: groupIds.toList())
           .snapshots();
 
-  Future<Map<String, MypeMarker>> getMarkers(String userId) async {
+  Future<Map<String, MypeMarker>> getMarkers(List<String> groupIds) async {
     Map<String, MypeMarker> markers = Map<String, MypeMarker>();
-    final querySnapshot =
-        await _read(firebaseFirestoreProvider).collection("locations").get();
+    if (groupIds.isNotEmpty){
+    final querySnapshot = await _read(firebaseFirestoreProvider)
+        .collection("markers")
+        .where("groupIds", arrayContainsAny: groupIds.toList())
+        .get();
 
     for (final doc in querySnapshot.docs) {
       markers[doc.id] = MypeMarker.fromDocument(doc);
     }
+    }
+
     return markers;
   }
 
@@ -53,18 +57,11 @@ class MarkerRepository {
     update();
   } */
 
-  addMarker(
-    LatLng position,
-  ) async {
-    final newMarker = MypeMarker(
-        imageIds: [],
-        groupIds: Set.identity(),
-        latitude: position.latitude,
-        longitude: position.longitude,);
+  addMarker(MypeMarker marker) async {
     final doc = await _read(firebaseFirestoreProvider)
         .collection("markers")
-        .add(newMarker.toJson());
-    return newMarker.copyWith(id: doc.id);
+        .add(marker.toJson());
+    return marker.copyWith(id: doc.id);
   }
 
 /*   updateMarker(String id, MypeMarker mypeMarker) async {
@@ -94,7 +91,6 @@ class MarkerRepository {
         throw CustomException(message: e.message);
       }
     }
-    
   }
 
 /*   clearUserMarker() {
