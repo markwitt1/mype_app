@@ -27,17 +27,19 @@ class FireMap extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final userMarker = useState<MypeMarker?>(null);
+    final markersController = useProvider(markersControllerProvider);
 
     openMarkerWindow(MypeMarker mypeMarker) async {
       bool? success = await Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => MarkerWindow(mypeMarker: mypeMarker)));
       if (success == true) userMarker.value = null;
+      markersController.getMarkers();
     }
 
     final googleMapController = useState<GoogleMapController?>(null);
     //final markersController = useProvider(markersControllerProvider);
     final markersAsyncValue = useProvider(markersControllerProvider.state);
- /*    useEffect(() {
+    /*    useEffect(() {
       markersController.getMarkers();
     }, []); */
 

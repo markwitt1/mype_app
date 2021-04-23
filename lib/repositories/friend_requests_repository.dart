@@ -46,7 +46,7 @@ class FriendRequestsRepository {
 
   Future<void> deleteFriendRequest(String id) async {
     try {
-      final doc = await _read(firebaseFirestoreProvider)
+      await _read(firebaseFirestoreProvider)
           .collection("friendRequests")
           .doc(id)
           .delete();

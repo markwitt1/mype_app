@@ -76,7 +76,7 @@ class FriendRequestsController
       _read(userControllerProvider).updateUser(_user!.copyWith(
           friendIds: [..._user!.friendIds, friendRequest.from].toSet()));
 
-      _read(userControllerProvider).updateUser(otherUser.copyWith(
+      _read(userRepositoryProvider).updateUser(otherUser.copyWith(
           friendIds: [...otherUser.friendIds, _user!.id!].toSet()));
     } else {
       throw CustomException(message: "Error accepting friend request");

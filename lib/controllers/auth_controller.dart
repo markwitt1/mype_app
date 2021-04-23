@@ -26,7 +26,9 @@ class AuthController extends StateNotifier<User?> {
   }
 
   void login(String email, String password) async {
-    try {} on FirebaseAuthException catch (e) {
+    try {
+      await _read(authRepositoryProvider).signIn(email, password);
+    } on FirebaseAuthException catch (e) {
       throw CustomException(message: e.message);
     }
   }
@@ -43,7 +45,12 @@ class AuthController extends StateNotifier<User?> {
 
   void createUser(String name, String email, String password,
       PhoneAuthCredential? phoneAuthCredential, String? phoneNumber) async {
-    state = await _read(authRepositoryProvider)
-        .createUser(name, email, password, phoneAuthCredential, phoneNumber);
+    try {
+      final user = await _read(authRepositoryProvider)
+          .createUser(name, email, password, phoneAuthCredential, phoneNumber);
+      state = user;
+    } catch (e) {
+      print(e.toString());
+    }
   }
 }

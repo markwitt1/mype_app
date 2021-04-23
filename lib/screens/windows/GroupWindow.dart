@@ -6,7 +6,6 @@ import 'package:mype_app/controllers/friends_controller.dart';
 import 'package:mype_app/controllers/groups_controller.dart';
 import 'package:mype_app/controllers/user_controller.dart';
 import 'package:mype_app/models/group_model/group_model.dart';
-import 'package:mype_app/models/user_model/user_model.dart';
 
 class GroupWindow extends HookWidget {
   final _fbKey = GlobalKey<FormBuilderState>();
@@ -86,10 +85,6 @@ class GroupWindow extends HookWidget {
                           _fbKey.currentState!.value["userIds"].toSet();
 
                       if (group != null) {
-                        final updatedGroup = group!.copyWith(
-                            name: name,
-                            description: description,
-                            userIds: userIds);
                         //TODO
                       } else {
                         final group = Group(

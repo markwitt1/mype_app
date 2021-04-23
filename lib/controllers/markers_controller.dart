@@ -24,11 +24,7 @@ import 'package:mype_app/repositories/marker_repository.dart';
 final markersControllerProvider = StateNotifierProvider((ref) {
   final user = ref.watch(authControllerProvider.state);
   final groups = ref.watch(groupsControllerProvider.state).values.toList();
-  return MarkersController(
-    ref.read,
-    user?.uid,
-    groups
-  )..getMarkers();
+  return MarkersController(ref.read, user?.uid, groups)..getMarkers();
 });
 
 class MarkersController
@@ -49,8 +45,8 @@ class MarkersController
     if (_userId != null) {
       if (isRefreshing) state = AsyncValue.loading();
       try {
-        final markers =
-            await _read(markerRepositoryProvider).getMarkers(_groups.where((g) => g.id!=null).map((g) => g.id!).toList());
+        final markers = await _read(markerRepositoryProvider).getMarkers(
+            _groups.where((g) => g.id != null).map((g) => g.id!).toList());
         if (mounted) state = AsyncValue.data(markers);
       } on CustomException catch (e, st) {
         state = AsyncValue.error(e, st);

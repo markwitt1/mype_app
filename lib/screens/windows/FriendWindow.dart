@@ -60,7 +60,10 @@ class FriendWindow extends HookWidget {
           ),
         ),
         Expanded(
-          child: ContactsList(contactUserMap),
+          child: contactUserMap.when(
+              data: (contactUserMap) => ContactsList(contactUserMap),
+              loading: () => Center(child: CircularProgressIndicator()),
+              error: (e, _) => Text("Error: $e")),
         ),
       ]),
     );

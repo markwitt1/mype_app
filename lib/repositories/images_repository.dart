@@ -4,8 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mype_app/general_providers.dart';
-import 'package:mype_app/models/image_model/image_model.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import 'package:path/path.dart' as p;
 import 'package:http/http.dart' as http;
@@ -20,25 +21,58 @@ class ImagesRepository {
 
   const ImagesRepository(this._read);
 
-  addImage(File image) async {
+  Future<String> upload(File image) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     final serverFileName = "${Uuid().v4()}.${p.extension(image.path)}";
-    final fullPath = "images/$serverFileName";
     final Reference firebaseStorageRef =
-        _read(firebaseStorageProvider).ref().child(fullPath);
+        _read(firebaseStorageProvider).ref().child(serverFileName);
     UploadTask uploadTask = firebaseStorageRef.putFile(image);
-
-    await uploadTask.whenComplete(() async {
-      var downloadUrl = await firebaseStorageRef.getDownloadURL();
-      return ImageModel(downloadUrl: downloadUrl, file: image);
-    }).catchError((onError) {
-      print(onError);
-    });
+    try {
+      await uploadTask;
+      prefs.setString(serverFileName, image.path);
+      return serverFileName;
+    } on FirebaseException catch (e) {
+      throw CustomException(message: e.message);
+    }
   }
 
-  Future<File> download(ImageModel imageModel) async {
-    Directory appDocDir = await getApplicationDocumentsDirectory();
-    final http.Response downloadData =
-        await http.get(Uri(path: imageModel.downloadUrl!));
-    return File('${appDocDir.path}/${imageModel.serverFileName}');
+  Future<File?> downloadFromUrl(String url, String fileName) async {
+    if (await Permission.storage.request().isGranted) {
+      Directory appDocDir = await getApplicationDocumentsDirectory();
+      final client = http.Client();
+      final http.Response downloadData = await client.get(Uri.parse(url));
+      final file = File('${appDocDir.path}/$fileName');
+      await file.writeAsBytes(downloadData.bodyBytes);
+      return file;
+    }
+  }
+
+  Future<File?> getImage(String imageId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final mappedPath = prefs.getString(imageId);
+    if (mappedPath != null) {
+      return File(mappedPath);
+    } else {
+      Directory appDocDir = await getApplicationDocumentsDirectory();
+      final checkFile = File('${appDocDir.path}/$imageId');
+      if (await checkFile.exists()) {
+        return checkFile;
+      } else {
+        final file = await downloadFromFirebase(imageId);
+        return file;
+      }
+    }
+  }
+
+  Future<File?> downloadFromFirebase(String serverFileName) async {
+    if (await Permission.storage.request().isGranted) {
+      Directory appDocDir = await getApplicationDocumentsDirectory();
+      final file = File('${appDocDir.path}/$serverFileName');
+      await _read(firebaseStorageProvider)
+          .ref(serverFileName)
+          .writeToFile(file);
+      print("downloaded $file");
+      return file;
+    }
   }
 }

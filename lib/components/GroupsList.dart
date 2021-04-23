@@ -26,10 +26,6 @@ class GroupsList extends StatelessWidget {
       return Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [BadText("No groups...")]
-          /*        "No groups",
-          style: TextStyle(fontSize: 16),
-          textAlign: TextAlign.center, */
-          );
+          children: [BadText("No groups...")]);
   }
 }

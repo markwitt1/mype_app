@@ -54,11 +54,15 @@ class AuthRepository implements BaseAuthRepository {
     UserCredential _authResult = await _read(firebaseAuthProvider)
         .createUserWithEmailAndPassword(
             email: email.trim(), password: password);
-            if (phoneAuthCredential != null && phoneNumber != null){
-              await _authResult.user!.updatePhoneNumber(phoneAuthCredential);
-            }
-    await _read(userRepositoryProvider).createNewUser(UserModel.User(id:_authResult.user!.uid, name:name,email: email,phoneNumber: phoneNumber!,friendIds: Set.identity()));
+    if (phoneAuthCredential != null && phoneNumber != null) {
+      await _authResult.user!.updatePhoneNumber(phoneAuthCredential);
+    }
+    await _read(userRepositoryProvider).createNewUser(UserModel.User(
+        id: _authResult.user!.uid,
+        name: name,
+        email: email,
+        phoneNumber: phoneNumber!,
+        friendIds: Set.identity()));
     return _read(firebaseAuthProvider).currentUser;
-
   }
 }

@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:mype_app/general_providers.dart';
 import 'package:mype_app/models/user_model/user_model.dart';
+import 'package:mype_app/utils/formatPhoneNumber.dart';
 
 import 'custom_exception.dart';
 
@@ -74,7 +75,7 @@ class UserRepository implements BaseUserRepository {
     try {
       QuerySnapshot querySnapshot = await _read(firebaseFirestoreProvider)
           .collection("users")
-          .where("phoneNumber", isEqualTo: phoneNumber)
+          .where("phoneNumber", isEqualTo: formatPhoneNumber(phoneNumber))
           .get();
       if (querySnapshot.size == 1)
         return User.fromDocument(querySnapshot.docs[0]);

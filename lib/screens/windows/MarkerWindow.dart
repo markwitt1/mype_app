@@ -3,26 +3,49 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:form_builder_image_picker/form_builder_image_picker.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mype_app/controllers/groups_controller.dart';
-import 'package:mype_app/controllers/images_controller.dart';
 import 'package:mype_app/controllers/markers_controller.dart';
 import 'package:mype_app/models/group_model/group_model.dart';
 import 'package:mype_app/models/mype_marker/mype_marker.dart';
+import 'package:mype_app/repositories/images_repository.dart';
+import 'package:uuid/uuid.dart';
 
 class MarkerWindow extends HookWidget {
   final MypeMarker mypeMarker;
 
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey<FormBuilderState>();
   MarkerWindow({required this.mypeMarker}) : super();
+  final picker = ImagePicker();
 
   @override
   Widget build(BuildContext context) {
+    final imagesRepo = useProvider(imagesRepositoryProvider);
+
+    Future<File?> pickImage() async {
+      try {
+        return await imagesRepo.downloadFromUrl(
+            "https://source.unsplash.com/random", "${Uuid().v4()}.png");
+
+/*       final pickedFile = await picker.getImage(source: ImageSource.camera);
+      if (pickedFile?.path != null) return File(pickedFile!.path); */
+      } catch (e) {
+        debugPrint(e.toString());
+      }
+    }
+
     final markersController = useProvider(markersControllerProvider);
     final groups = useProvider(groupsControllerProvider.state);
-    final images = useProvider(imagesControllerProvider.state);
-    final imagesController = useProvider(imagesControllerProvider);
+
+/*     for (final imageId in markerState.value.imageIds) {
+      if (images[imageId] != null) {
+        markerImages.value.add(images[imageId]!);
+      } else {
+        imagesController.getImage(imageId);
+      }
+    } */
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Edit Marker"),
@@ -42,6 +65,9 @@ class MarkerWindow extends HookWidget {
               initialValue: mypeMarker.description,
             ),
             FormBuilderFilterChip(
+              validator: ((groups) => groups!.length > 0
+                  ? null
+                  : "you have to add at least one group"),
               name: "groups",
               options: groups.values
                   .map((group) => FormBuilderFieldOption(
@@ -53,47 +79,109 @@ class MarkerWindow extends HookWidget {
                   .where((group) => mypeMarker.groupIds.contains(group.id))
                   .toList(),
             ),
-            FutureBuilder(
-                future: imagesController.sync(),
-                builder: (_, snapshot) {
-                  List<File> imageFiles = [];
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    for (final imageId in mypeMarker.imageIds) {
-                      if (images[imageId] != null) {
-                        imageFiles.add(images[imageId]!.file!);
-                      } else
-                        imagesController.sync();
-                    }
+            FormBuilderField<List<String>>(
+              initialValue: mypeMarker.imageIds,
+              name: "imageIds",
+              builder: (field) => SizedBox(
+                  height: 100,
+                  child: Row(children: [
+                    ...field.value!.map((imageId) => FutureBuilder(
+                          future: imagesRepo.getImage(imageId),
+                          builder: (_, AsyncSnapshot<File?> snapshot) =>
+                              Flexible(
+                            child:
+                                snapshot.connectionState == ConnectionState.done
+                                    ? Image.file(
+                                        snapshot.data!,
+                                        fit: BoxFit.fitWidth,
+                                      )
+                                    : snapshot.connectionState ==
+                                            ConnectionState.none
+                                        ? Text("Image loading failed")
+                                        : CircularProgressIndicator(),
+                          ),
+                        )),
+                    IconButton(
+                        icon: Icon(Icons.add),
+                        onPressed: () async {
+                          File? newImage = await pickImage();
+                          if (newImage != null) {
+                            try {
+                              final imageId = await imagesRepo.upload(newImage);
+                              field.didChange([...?field.value, imageId]);
+                            } catch (e) {
+                              print(e.toString());
+                            }
+                          }
+                        })
+                  ])),
+            ),
 
-                    return FormBuilderImagePicker(
-                      initialValue: imageFiles,
-                      name: "images",
-                    );
-                  } else
-                    return CircularProgressIndicator();
-                }),
+            /*                     SizedBox(
+                      height: 100,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ...markerImages.value
+                              .map(
+                                (image) => Flexible(
+                                  child: image.file != null
+                                      ? Image.file(
+                                          image.file!,
+                                          fit: BoxFit.fitWidth,
+                                        )
+                                      : Text("error loading image"),
+                                ),
+                              )
+                              .toList(),
+                          IconButton(
+                            icon: Icon(Icons.add),
+                            onPressed: () async {
+                              File? newImage = await pickImage();
+                              if (newImage != null) {
+                                final imageModel = await imagesController
+                                    .addImage(ImageModel(file: newImage));
+                                markerState.value = markerState.value.copyWith(
+                                    imageIds: [
+                                      ...markerState.value.imageIds,
+                                      imageModel.serverFileName!
+                                    ]);
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                     )]),
+
+  
+                     */
+
             ElevatedButton(
                 onPressed: () {
                   if (_fbKey.currentState?.value != null &&
                       _fbKey.currentState!.saveAndValidate()) {
-                    print(_fbKey.currentState!.value);
+                    if (_fbKey.currentState!.validate()) {
+                      print(_fbKey.currentState!.value);
 
-                    final newMarker = mypeMarker.copyWith(
-                      title: _fbKey.currentState!.value["title"],
-                      description: _fbKey.currentState!.value["description"],
-                      groupIds:
-                          (_fbKey.currentState!.value["groups"] as List<Group>)
+                      final newMarker = mypeMarker.copyWith(
+                          title: _fbKey.currentState!.value["title"],
+                          description:
+                              _fbKey.currentState!.value["description"],
+                          groupIds: (_fbKey.currentState!.value["groups"]
+                                  as List<Group>)
                               .where((group) => group.id != null)
                               .map((group) => group.id!)
                               .toSet(),
-                    );
-                    if (mypeMarker.id == null) {
-                      markersController.addMarker(newMarker);
-                    } else {
-                      markersController.updateMarker(mypeMarker.id!, newMarker);
+                          imageIds: _fbKey.currentState!.value["imageIds"]);
+                      if (mypeMarker.id == null) {
+                        markersController.addMarker(newMarker);
+                      } else {
+                        markersController.updateMarker(
+                            mypeMarker.id!, newMarker);
+                      }
                     }
+                    Navigator.of(context).pop(true);
                   }
-                  Navigator.of(context).pop(true);
                 },
                 child: Text("Submit"))
           ],

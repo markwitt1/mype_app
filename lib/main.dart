@@ -3,7 +3,7 @@ import 'package:flutter/material.dart' hide Router;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mype_app/screens/Home.dart';
-import 'package:mype_app/screens/SignUp.dart';
+import 'package:mype_app/screens/LogIn.dart';
 import 'controllers/auth_controller.dart';
 
 void main() async {
@@ -23,10 +23,9 @@ class HomeScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final firebaseUser = useProvider(authControllerProvider.state);
-    print(firebaseUser);
     if (firebaseUser != null) {
       return Home();
     }
-    return SignUp();
+    return LogIn();
   }
 }

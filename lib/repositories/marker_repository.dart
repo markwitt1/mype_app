@@ -21,15 +21,15 @@ class MarkerRepository {
 
   Future<Map<String, MypeMarker>> getMarkers(List<String> groupIds) async {
     Map<String, MypeMarker> markers = Map<String, MypeMarker>();
-    if (groupIds.isNotEmpty){
-    final querySnapshot = await _read(firebaseFirestoreProvider)
-        .collection("markers")
-        .where("groupIds", arrayContainsAny: groupIds.toList())
-        .get();
+    if (groupIds.isNotEmpty) {
+      final querySnapshot = await _read(firebaseFirestoreProvider)
+          .collection("markers")
+          .where("groupIds", arrayContainsAny: groupIds.toList())
+          .get();
 
-    for (final doc in querySnapshot.docs) {
-      markers[doc.id] = MypeMarker.fromDocument(doc);
-    }
+      for (final doc in querySnapshot.docs) {
+        markers[doc.id] = MypeMarker.fromDocument(doc);
+      }
     }
 
     return markers;
@@ -84,7 +84,7 @@ class MarkerRepository {
     if (id != "user") {
       try {
         await _read(firebaseFirestoreProvider)
-            .collection('locations')
+            .collection('markers')
             .doc(id)
             .update(mypeMarker.toJson());
       } on FirebaseException catch (e) {
