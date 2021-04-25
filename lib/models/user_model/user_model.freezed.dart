@@ -21,7 +21,7 @@ class _$UserTearOff {
   const _$UserTearOff();
 
   _User call(
-      {String? id,
+      {@JsonKey(name: "code", toJson: createCode) String? id,
       required String name,
       required String email,
       required String phoneNumber,
@@ -45,6 +45,7 @@ const $User = _$UserTearOff();
 
 /// @nodoc
 mixin _$User {
+  @JsonKey(name: "code", toJson: createCode)
   String? get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
@@ -61,7 +62,7 @@ abstract class $UserCopyWith<$Res> {
   factory $UserCopyWith(User value, $Res Function(User) then) =
       _$UserCopyWithImpl<$Res>;
   $Res call(
-      {String? id,
+      {@JsonKey(name: "code", toJson: createCode) String? id,
       String name,
       String email,
       String phoneNumber,
@@ -115,7 +116,7 @@ abstract class _$UserCopyWith<$Res> implements $UserCopyWith<$Res> {
       __$UserCopyWithImpl<$Res>;
   @override
   $Res call(
-      {String? id,
+      {@JsonKey(name: "code", toJson: createCode) String? id,
       String name,
       String email,
       String phoneNumber,
@@ -168,8 +169,8 @@ class __$UserCopyWithImpl<$Res> extends _$UserCopyWithImpl<$Res>
 
 /// @nodoc
 class _$_User with DiagnosticableTreeMixin implements _User {
-  const _$_User(
-      {this.id,
+  _$_User(
+      {@JsonKey(name: "code", toJson: createCode) this.id,
       required this.name,
       required this.email,
       required this.phoneNumber,
@@ -179,6 +180,7 @@ class _$_User with DiagnosticableTreeMixin implements _User {
       _$_$_UserFromJson(json);
 
   @override
+  @JsonKey(name: "code", toJson: createCode)
   final String? id;
   @override
   final String name;
@@ -245,8 +247,8 @@ class _$_User with DiagnosticableTreeMixin implements _User {
 }
 
 abstract class _User implements User {
-  const factory _User(
-      {String? id,
+  factory _User(
+      {@JsonKey(name: "code", toJson: createCode) String? id,
       required String name,
       required String email,
       required String phoneNumber,
@@ -255,6 +257,7 @@ abstract class _User implements User {
   factory _User.fromJson(Map<String, dynamic> json) = _$_User.fromJson;
 
   @override
+  @JsonKey(name: "code", toJson: createCode)
   String? get id => throw _privateConstructorUsedError;
   @override
   String get name => throw _privateConstructorUsedError;

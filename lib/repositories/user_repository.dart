@@ -17,6 +17,20 @@ class UserRepository implements BaseUserRepository {
 
   const UserRepository(this._read);
 
+  Future<User?> getUserByCode(String code) async {
+    try {
+      QuerySnapshot snapshot = await _read(firebaseFirestoreProvider)
+          .collection("users")
+          .where("code", isEqualTo: code)
+          .get();
+
+      if (snapshot.docs[0].exists) return User.fromDocument(snapshot.docs[0]);
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
   Future<User?> getUser(String uid) async {
     try {
       DocumentSnapshot _doc = await _read(firebaseFirestoreProvider)
@@ -85,6 +99,18 @@ class UserRepository implements BaseUserRepository {
     } catch (e) {
       print(e);
     }
+  }
+
+  removeFriend(User user1, String user2Id) async {
+    user1.friendIds.remove(user2Id);
+
+    _read(firebaseFirestoreProvider).collection("users").doc(user1.id!).update({
+      "friendIds": FieldValue.arrayRemove([user2Id])
+    });
+    _read(firebaseFirestoreProvider).collection("users").doc(user2Id).update({
+      "friendIds": FieldValue.arrayRemove([user1.id!])
+    });
+    return user1;
   }
 
 /*   UserModel get user => _userModel.value;

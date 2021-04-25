@@ -8,6 +8,8 @@ import 'package:mype_app/repositories/custom_exception.dart';
 import 'package:mype_app/components/ContactsList.dart';
 import 'package:mype_app/components/CopyButton.dart';
 import 'package:mype_app/components/IncomingFriendRequests.dart';
+import '../../utils/createFriendLink.dart';
+import 'package:share/share.dart';
 
 class FriendWindow extends HookWidget {
   @override
@@ -39,6 +41,14 @@ class FriendWindow extends HookWidget {
               SelectableText(
                   "My User ID: ${user != null ? user.id : "loading..."}"),
               CopyButton(user != null ? user.id : null),
+              TextButton.icon(
+                  icon: Icon(Icons.share),
+                  label: Text("SHARE LINK"),
+                  onPressed: () async {
+                    String link =
+                        await createFriendLink(user!.id!.substring(0, 10));
+                    Share.share(link);
+                  }),
               TextField(
                 controller: textController,
                 decoration: InputDecoration(hintText: "Enter Friends ID"),

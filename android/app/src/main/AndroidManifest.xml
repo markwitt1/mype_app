@@ -27,14 +27,14 @@
       android:hardwareAccelerated="true"
       android:windowSoftInputMode="adjustResize"
     >
-     <intent-filter android:label="InviteLink">
+     <intent-filter android:label="AddLink">
         <action android:name="android.intent.action.VIEW" />
         <category android:name="android.intent.category.DEFAULT" />
         <category android:name="android.intent.category.BROWSABLE" />
         <data
           android:scheme="https"
           android:host="mype.app"
-          android:pathPrefix="/invite"
+          android:pathPrefix="/add"
         />
       </intent-filter>
             <!-- Specifies an Android theme to apply to this Activity as soon as
@@ -57,6 +57,12 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+              <action android:name="android.intent.action.VIEW"/>
+              <category android:name="android.intent.category.DEFAULT"/>
+              <category android:name="android.intent.category.BROWSABLE"/>
+              <data android:host="mype.app" android:scheme="https"/>
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.

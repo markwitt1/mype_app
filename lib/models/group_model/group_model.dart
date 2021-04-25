@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:flutter/foundation.dart';
 
@@ -6,7 +7,7 @@ part "group_model.freezed.dart";
 part "group_model.g.dart";
 
 @freezed
- class Group with _$Group {
+class Group with _$Group {
   const factory Group(
       {String? id,
       required String name,

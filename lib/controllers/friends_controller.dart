@@ -21,6 +21,4 @@ class FriendsController extends StateNotifier<Map<String, User>> {
   }
 
   getUser(id) => _read(userRepositoryProvider).getUser(id);
-
-  removeFriend(String id) {}
 }

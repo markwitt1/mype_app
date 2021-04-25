@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mype_app/components/BadText.dart';
-import 'package:mype_app/controllers/friends_controller.dart';
+import 'package:mype_app/controllers/user_controller.dart';
 import 'package:mype_app/models/user_model/user_model.dart';
 
 class FriendsList extends HookWidget {
@@ -11,7 +11,7 @@ class FriendsList extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final friendsController = useProvider(friendsControllerProvider);
+    final userController = useProvider(userControllerProvider);
     if (friends.isEmpty) return Center(child: BadText("No friends..."));
     return ListView.builder(
       itemCount: friends.length,
@@ -20,7 +20,7 @@ class FriendsList extends HookWidget {
         trailing: IconButton(
           icon: Icon(Icons.delete),
           onPressed: () {
-            friendsController.removeFriend(friends[i].id!);
+            userController.removeFriend(friends[i].id!);
           },
         ),
       ),

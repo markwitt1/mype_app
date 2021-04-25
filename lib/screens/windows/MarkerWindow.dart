@@ -4,36 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:mype_app/controllers/groups_controller.dart';
 import 'package:mype_app/controllers/markers_controller.dart';
 import 'package:mype_app/models/group_model/group_model.dart';
 import 'package:mype_app/models/mype_marker/mype_marker.dart';
 import 'package:mype_app/repositories/images_repository.dart';
-import 'package:uuid/uuid.dart';
 
 class MarkerWindow extends HookWidget {
   final MypeMarker mypeMarker;
 
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey<FormBuilderState>();
   MarkerWindow({required this.mypeMarker}) : super();
-  final picker = ImagePicker();
 
   @override
   Widget build(BuildContext context) {
     final imagesRepo = useProvider(imagesRepositoryProvider);
-
-    Future<File?> pickImage() async {
-      try {
-        return await imagesRepo.downloadFromUrl(
-            "https://source.unsplash.com/random", "${Uuid().v4()}.png");
-
-/*       final pickedFile = await picker.getImage(source: ImageSource.camera);
-      if (pickedFile?.path != null) return File(pickedFile!.path); */
-      } catch (e) {
-        debugPrint(e.toString());
-      }
-    }
 
     final markersController = useProvider(markersControllerProvider);
     final groups = useProvider(groupsControllerProvider.state);
@@ -104,7 +89,7 @@ class MarkerWindow extends HookWidget {
                     IconButton(
                         icon: Icon(Icons.add),
                         onPressed: () async {
-                          File? newImage = await pickImage();
+                          File? newImage = await imagesRepo.pickImage();
                           if (newImage != null) {
                             try {
                               final imageId = await imagesRepo.upload(newImage);
@@ -116,46 +101,6 @@ class MarkerWindow extends HookWidget {
                         })
                   ])),
             ),
-
-            /*                     SizedBox(
-                      height: 100,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          ...markerImages.value
-                              .map(
-                                (image) => Flexible(
-                                  child: image.file != null
-                                      ? Image.file(
-                                          image.file!,
-                                          fit: BoxFit.fitWidth,
-                                        )
-                                      : Text("error loading image"),
-                                ),
-                              )
-                              .toList(),
-                          IconButton(
-                            icon: Icon(Icons.add),
-                            onPressed: () async {
-                              File? newImage = await pickImage();
-                              if (newImage != null) {
-                                final imageModel = await imagesController
-                                    .addImage(ImageModel(file: newImage));
-                                markerState.value = markerState.value.copyWith(
-                                    imageIds: [
-                                      ...markerState.value.imageIds,
-                                      imageModel.serverFileName!
-                                    ]);
-                              }
-                            },
-                          ),
-                        ],
-                      ),
-                     )]),
-
-  
-                     */
-
             ElevatedButton(
                 onPressed: () {
                   if (_fbKey.currentState?.value != null &&

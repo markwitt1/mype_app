@@ -2,7 +2,10 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mype_app/general_providers.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -19,7 +22,22 @@ final imagesRepositoryProvider =
 class ImagesRepository {
   final Reader _read;
 
-  const ImagesRepository(this._read);
+  ImagesRepository(this._read);
+  final picker = ImagePicker();
+
+  Future<File?> pickImage() async {
+    try {
+      if (kReleaseMode) {
+        final pickedFile = await picker.getImage(source: ImageSource.camera);
+        if (pickedFile?.path != null) return File(pickedFile!.path);
+      } else {
+        return await downloadFromUrl(
+            "https://source.unsplash.com/random", "${Uuid().v4()}.png");
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
 
   Future<String> upload(File image) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

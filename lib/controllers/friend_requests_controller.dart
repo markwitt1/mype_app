@@ -78,8 +78,20 @@ class FriendRequestsController
 
       _read(userRepositoryProvider).updateUser(otherUser.copyWith(
           friendIds: [...otherUser.friendIds, _user!.id!].toSet()));
+
+      state["incoming"]!.remove(friendRequest);
     } else {
       throw CustomException(message: "Error accepting friend request");
+    }
+  }
+
+  void reject(FriendRequest friendRequest) async {
+    try {
+      _read(friendRequestsRepositoryProvider)
+          .deleteFriendRequest(friendRequest.id!);
+      state["incoming"]!.remove(friendRequest);
+    } on FirebaseException catch (e) {
+      throw CustomException(message: e.message);
     }
   }
 }

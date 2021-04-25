@@ -29,6 +29,10 @@ class UserController extends StateNotifier<User?> {
     }
   }
 
+  removeFriend(String friendId) async {
+    state = await _read(userRepositoryProvider).removeFriend(state!, friendId);
+  }
+
   updateUser(User updated) async {
     if (_userId != null && _userId == updated.id) {
       try {
