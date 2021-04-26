@@ -33,8 +33,8 @@ dependencies:
   firebase_storage: ^8.0.3
   flutter_form_builder: ^6.0.0
   flutter_hooks: ^0.16.0
-  freezed_annotation: any
-  google_maps_flutter: any
+  freezed_annotation: ^0.14.1
+  google_maps_flutter: ^2.0.3
   hooks_riverpod: ^0.13.0
   image_picker: ^0.7.4
   intl_phone_field: ^2.0.0
@@ -43,14 +43,15 @@ dependencies:
   permission_handler: ^7.0.0
   share: ^2.0.1
   shared_preferences: ^2.0.5
-  uuid: any
+  uuid: ^3.0.4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^1.12.2
-  freezed: null
-  json_serializable: null
+  build_runner: ^2.0.1
+  flutter_launcher_icons: ^0.9.0
+  freezed: ^0.14.1+3
+  json_serializable: ^4.1.1
 flutter_icons:
   android: true
   ios: true
