@@ -25,13 +25,15 @@ class _$UserTearOff {
       required String name,
       required String email,
       required String phoneNumber,
-      required Set<String> friendIds}) {
+      required Set<String> friendIds,
+      required String? profilePicture}) {
     return _User(
       id: id,
       name: name,
       email: email,
       phoneNumber: phoneNumber,
       friendIds: friendIds,
+      profilePicture: profilePicture,
     );
   }
 
@@ -51,6 +53,7 @@ mixin _$User {
   String get email => throw _privateConstructorUsedError;
   String get phoneNumber => throw _privateConstructorUsedError;
   Set<String> get friendIds => throw _privateConstructorUsedError;
+  String? get profilePicture => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -66,7 +69,8 @@ abstract class $UserCopyWith<$Res> {
       String name,
       String email,
       String phoneNumber,
-      Set<String> friendIds});
+      Set<String> friendIds,
+      String? profilePicture});
 }
 
 /// @nodoc
@@ -84,6 +88,7 @@ class _$UserCopyWithImpl<$Res> implements $UserCopyWith<$Res> {
     Object? email = freezed,
     Object? phoneNumber = freezed,
     Object? friendIds = freezed,
+    Object? profilePicture = freezed,
   }) {
     return _then(_value.copyWith(
       id: id == freezed
@@ -106,6 +111,10 @@ class _$UserCopyWithImpl<$Res> implements $UserCopyWith<$Res> {
           ? _value.friendIds
           : friendIds // ignore: cast_nullable_to_non_nullable
               as Set<String>,
+      profilePicture: profilePicture == freezed
+          ? _value.profilePicture
+          : profilePicture // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -120,7 +129,8 @@ abstract class _$UserCopyWith<$Res> implements $UserCopyWith<$Res> {
       String name,
       String email,
       String phoneNumber,
-      Set<String> friendIds});
+      Set<String> friendIds,
+      String? profilePicture});
 }
 
 /// @nodoc
@@ -139,6 +149,7 @@ class __$UserCopyWithImpl<$Res> extends _$UserCopyWithImpl<$Res>
     Object? email = freezed,
     Object? phoneNumber = freezed,
     Object? friendIds = freezed,
+    Object? profilePicture = freezed,
   }) {
     return _then(_User(
       id: id == freezed
@@ -161,6 +172,10 @@ class __$UserCopyWithImpl<$Res> extends _$UserCopyWithImpl<$Res>
           ? _value.friendIds
           : friendIds // ignore: cast_nullable_to_non_nullable
               as Set<String>,
+      profilePicture: profilePicture == freezed
+          ? _value.profilePicture
+          : profilePicture // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -174,7 +189,8 @@ class _$_User with DiagnosticableTreeMixin implements _User {
       required this.name,
       required this.email,
       required this.phoneNumber,
-      required this.friendIds});
+      required this.friendIds,
+      required this.profilePicture});
 
   factory _$_User.fromJson(Map<String, dynamic> json) =>
       _$_$_UserFromJson(json);
@@ -190,10 +206,12 @@ class _$_User with DiagnosticableTreeMixin implements _User {
   final String phoneNumber;
   @override
   final Set<String> friendIds;
+  @override
+  final String? profilePicture;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'User(id: $id, name: $name, email: $email, phoneNumber: $phoneNumber, friendIds: $friendIds)';
+    return 'User(id: $id, name: $name, email: $email, phoneNumber: $phoneNumber, friendIds: $friendIds, profilePicture: $profilePicture)';
   }
 
   @override
@@ -205,7 +223,8 @@ class _$_User with DiagnosticableTreeMixin implements _User {
       ..add(DiagnosticsProperty('name', name))
       ..add(DiagnosticsProperty('email', email))
       ..add(DiagnosticsProperty('phoneNumber', phoneNumber))
-      ..add(DiagnosticsProperty('friendIds', friendIds));
+      ..add(DiagnosticsProperty('friendIds', friendIds))
+      ..add(DiagnosticsProperty('profilePicture', profilePicture));
   }
 
   @override
@@ -223,7 +242,10 @@ class _$_User with DiagnosticableTreeMixin implements _User {
                     .equals(other.phoneNumber, phoneNumber)) &&
             (identical(other.friendIds, friendIds) ||
                 const DeepCollectionEquality()
-                    .equals(other.friendIds, friendIds)));
+                    .equals(other.friendIds, friendIds)) &&
+            (identical(other.profilePicture, profilePicture) ||
+                const DeepCollectionEquality()
+                    .equals(other.profilePicture, profilePicture)));
   }
 
   @override
@@ -233,7 +255,8 @@ class _$_User with DiagnosticableTreeMixin implements _User {
       const DeepCollectionEquality().hash(name) ^
       const DeepCollectionEquality().hash(email) ^
       const DeepCollectionEquality().hash(phoneNumber) ^
-      const DeepCollectionEquality().hash(friendIds);
+      const DeepCollectionEquality().hash(friendIds) ^
+      const DeepCollectionEquality().hash(profilePicture);
 
   @JsonKey(ignore: true)
   @override
@@ -252,7 +275,8 @@ abstract class _User implements User {
       required String name,
       required String email,
       required String phoneNumber,
-      required Set<String> friendIds}) = _$_User;
+      required Set<String> friendIds,
+      required String? profilePicture}) = _$_User;
 
   factory _User.fromJson(Map<String, dynamic> json) = _$_User.fromJson;
 
@@ -267,6 +291,8 @@ abstract class _User implements User {
   String get phoneNumber => throw _privateConstructorUsedError;
   @override
   Set<String> get friendIds => throw _privateConstructorUsedError;
+  @override
+  String? get profilePicture => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   _$UserCopyWith<_User> get copyWith => throw _privateConstructorUsedError;

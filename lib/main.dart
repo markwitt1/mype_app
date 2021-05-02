@@ -19,7 +19,7 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: HomeScreen());
+    return MaterialApp(title: 'MYPE', home: HomeScreen());
   }
 }
 

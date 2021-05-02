@@ -64,13 +64,7 @@ class MarkersController
   }
 
   Future<void> updateMarker(String markerId, MypeMarker newMarker) async {
-    assert(newMarker.id == markerId);
-    try {
-      await _read(markerRepositoryProvider).updateMarker(markerId, newMarker);
-
-      state = AsyncValue.data({markerId: newMarker, ...?state.data?.value});
-    } on CustomException catch (_) {
-      //TODO
-    }
+    await _read(markerRepositoryProvider).updateMarker(markerId, newMarker);
+    state = AsyncValue.data({markerId: newMarker, ...?state.data?.value});
   }
 }

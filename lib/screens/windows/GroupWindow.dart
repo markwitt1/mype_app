@@ -3,9 +3,9 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mype_app/controllers/friends_controller.dart';
-import 'package:mype_app/controllers/groups_controller.dart';
 import 'package:mype_app/controllers/user_controller.dart';
 import 'package:mype_app/models/group_model/group_model.dart';
+import 'package:mype_app/components/FriendProfilePicture.dart';
 
 class GroupWindow extends HookWidget {
   final _fbKey = GlobalKey<FormBuilderState>();
@@ -14,12 +14,11 @@ class GroupWindow extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final groupsController = useProvider(groupsControllerProvider);
     final user = useProvider(userControllerProvider.state);
     final friends = useProvider(friendsControllerProvider.state);
     return Scaffold(
         appBar: AppBar(
-          title: Text("Add Group"),
+          title: Text(group == null ? "Add Group" : "Group: ${group!.name}"),
         ),
         body: FormBuilder(
           key: _fbKey,
@@ -47,19 +46,24 @@ class GroupWindow extends HookWidget {
                               final List<String> addedUsers =
                                   state.value != null ? state.value! : [];
                               String key = friends.keys.elementAt(i);
+                              final friend = friends[key]!;
                               return CheckboxListTile(
+                                secondary: friend.profilePicture != null
+                                    ? FriendProfilePicture(
+                                        fileName: friend.profilePicture!)
+                                    : null,
                                 title: Text(friends[key]!.name),
                                 onChanged: (bool? selected) {
                                   var newState = state.value!;
                                   if (selected == true) {
-                                    newState.add(friends[key]!.id!);
+                                    newState.add(friend.id!);
                                     state.didChange(newState);
                                   } else if (selected == false) {
-                                    newState.remove(friends[key]!.id!);
+                                    newState.remove(key);
                                   }
                                   state.didChange(newState);
                                 },
-                                value: addedUsers.contains(friends[key]!.id),
+                                value: addedUsers.contains(friend.id),
                               );
                             });
                       },
@@ -68,7 +72,7 @@ class GroupWindow extends HookWidget {
                       name: "userIds")
                   : CircularProgressIndicator(),
               ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (_fbKey.currentState?.value != null &&
                         _fbKey.currentState!.saveAndValidate()) {
                       final name = _fbKey.currentState!.value["name"];
@@ -85,15 +89,18 @@ class GroupWindow extends HookWidget {
                           _fbKey.currentState!.value["userIds"].toSet();
 
                       if (group != null) {
-                        //TODO
-                      } else {
-                        final group = Group(
+                        final updatedGroup = group!.copyWith(
                             name: name,
                             description: description,
                             userIds: userIds);
-                        groupsController.createGroup(group);
+                        Navigator.of(context).pop(updatedGroup);
+                      } else {
+                        final newGroup = Group(
+                            name: name,
+                            description: description,
+                            userIds: userIds);
+                        Navigator.of(context).pop(newGroup);
                       }
-                      Navigator.of(context).pop(true);
                     }
                   },
                   child: Text("Submit"))

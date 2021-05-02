@@ -9,6 +9,7 @@ import 'package:mype_app/controllers/markers_controller.dart';
 import 'package:mype_app/models/group_model/group_model.dart';
 import 'package:mype_app/models/mype_marker/mype_marker.dart';
 import 'package:mype_app/repositories/images_repository.dart';
+import '../../utils/pickImageSource.dart';
 
 class MarkerWindow extends HookWidget {
   final MypeMarker mypeMarker;
@@ -19,21 +20,14 @@ class MarkerWindow extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final imagesRepo = useProvider(imagesRepositoryProvider);
-
     final markersController = useProvider(markersControllerProvider);
     final groups = useProvider(groupsControllerProvider.state);
 
-/*     for (final imageId in markerState.value.imageIds) {
-      if (images[imageId] != null) {
-        markerImages.value.add(images[imageId]!);
-      } else {
-        imagesController.getImage(imageId);
-      }
-    } */
-
     return Scaffold(
       appBar: AppBar(
-        title: Text("Edit Marker"),
+        title: Text(mypeMarker.id == null
+            ? "New Marker"
+            : "Marker: ${mypeMarker.title}"),
       ),
       body: FormBuilder(
         key: _fbKey,
@@ -89,13 +83,18 @@ class MarkerWindow extends HookWidget {
                     IconButton(
                         icon: Icon(Icons.add),
                         onPressed: () async {
-                          File? newImage = await imagesRepo.pickImage();
-                          if (newImage != null) {
-                            try {
-                              final imageId = await imagesRepo.upload(newImage);
-                              field.didChange([...?field.value, imageId]);
-                            } catch (e) {
-                              print(e.toString());
+                          final imageSource = await pickImageSource(context);
+                          if (imageSource != null) {
+                            File? newImage =
+                                await imagesRepo.pickImage(imageSource);
+                            if (newImage != null) {
+                              try {
+                                final imageId =
+                                    await imagesRepo.upload(newImage);
+                                field.didChange([...?field.value, imageId]);
+                              } catch (e) {
+                                print(e.toString());
+                              }
                             }
                           }
                         })

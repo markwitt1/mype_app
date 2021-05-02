@@ -25,10 +25,10 @@ class ImagesRepository {
   ImagesRepository(this._read);
   final picker = ImagePicker();
 
-  Future<File?> pickImage() async {
+  Future<File?> pickImage(ImageSource source) async {
     try {
       if (kReleaseMode) {
-        final pickedFile = await picker.getImage(source: ImageSource.camera);
+        final pickedFile = await picker.getImage(source: source);
         if (pickedFile?.path != null) return File(pickedFile!.path);
       } else {
         return await downloadFromUrl(
@@ -41,7 +41,7 @@ class ImagesRepository {
 
   Future<String> upload(File image) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    final serverFileName = "${Uuid().v4()}.${p.extension(image.path)}";
+    final serverFileName = "${Uuid().v4()}${p.extension(image.path)}";
     final Reference firebaseStorageRef =
         _read(firebaseStorageProvider).ref().child(serverFileName);
     UploadTask uploadTask = firebaseStorageRef.putFile(image);

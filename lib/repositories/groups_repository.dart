@@ -19,7 +19,20 @@ class GroupsRepository {
       final doc = await _read(firebaseFirestoreProvider)
           .collection("groups")
           .add(group.toJson());
-      return group.copyWith(id:doc.id);
+      return group.copyWith(id: doc.id);
+    } on FirebaseException catch (e) {
+      throw CustomException(message: e.message);
+    }
+  }
+
+  Future<Group> updateGroup(Group group) async {
+    //users.add(Get.find<UserController>().user);
+    try {
+      await _read(firebaseFirestoreProvider)
+          .collection("groups")
+          .doc(group.id)
+          .update(group.toJson());
+      return group;
     } on FirebaseException catch (e) {
       throw CustomException(message: e.message);
     }

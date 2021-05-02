@@ -61,6 +61,7 @@ class AuthRepository implements BaseAuthRepository {
         id: _authResult.user!.uid,
         name: name,
         email: email,
+        profilePicture: null,
         phoneNumber: phoneNumber!,
         friendIds: Set.identity()));
     return _read(firebaseAuthProvider).currentUser;

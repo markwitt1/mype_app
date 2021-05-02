@@ -14,6 +14,7 @@ _$_User _$_$_UserFromJson(Map<String, dynamic> json) {
     phoneNumber: json['phoneNumber'] as String,
     friendIds:
         (json['friendIds'] as List<dynamic>).map((e) => e as String).toSet(),
+    profilePicture: json['profilePicture'] as String?,
   );
 }
 
@@ -23,4 +24,5 @@ Map<String, dynamic> _$_$_UserToJson(_$_User instance) => <String, dynamic>{
       'email': instance.email,
       'phoneNumber': instance.phoneNumber,
       'friendIds': instance.friendIds.toList(),
+      'profilePicture': instance.profilePicture,
     };

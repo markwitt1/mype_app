@@ -23,13 +23,14 @@ class GroupsController extends StateNotifier<Map<String, Group>> {
     }
   }
 
-  void createGroup(Group data) async {
+  Future<void> createGroup(Group data) async {
     Group group = await _read(groupsRepositoryProvider).createGroup(data);
     state = {group.id!: group, ...state};
-    //return group.copyWith(id: doc.id);
   }
-/*     getGroupIds() async {
-    await getGroups();
-    return groups.values.map((GroupModel group) => group.id).toList();
-  } */
+
+  Future<void> updateGroup(Group data) async {
+    final updated = await _read(groupsRepositoryProvider).updateGroup(data);
+    state[updated.id!] = updated;
+    state = {...state};
+  }
 }

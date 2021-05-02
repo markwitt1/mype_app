@@ -15,6 +15,7 @@ class User with _$User {
     required String email,
     required String phoneNumber,
     required Set<String> friendIds,
+    required String? profilePicture,
   }) = _User;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
