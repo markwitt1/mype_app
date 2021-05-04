@@ -1,6 +1,7 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mype_app/controllers/auth_controller.dart';
 import 'package:mype_app/models/group_model/group_model.dart';
+import 'package:mype_app/repositories/custom_exception.dart';
 import 'package:mype_app/repositories/groups_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -16,7 +17,7 @@ class GroupsController extends StateNotifier<Map<String, Group>> {
 
   GroupsController(this._read, this._userId) : super({});
 
-  void getGroups() async {
+  Future<void> getGroups() async {
     if (_userId != null) {
       if (mounted)
         state = await _read(groupsRepositoryProvider).getGroups(_userId!);
@@ -32,5 +33,15 @@ class GroupsController extends StateNotifier<Map<String, Group>> {
     final updated = await _read(groupsRepositoryProvider).updateGroup(data);
     state[updated.id!] = updated;
     state = {...state};
+  }
+
+  Future<void> deleteGroup(String groupId) async {
+    try {
+      await _read(groupsRepositoryProvider).deleteGroup(groupId);
+      state.remove(groupId);
+      state = state;
+    } on FirebaseException catch (e) {
+      throw CustomException(message: e.message);
+    }
   }
 }

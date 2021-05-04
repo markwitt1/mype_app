@@ -26,13 +26,23 @@ class GroupsRepository {
   }
 
   Future<Group> updateGroup(Group group) async {
-    //users.add(Get.find<UserController>().user);
     try {
       await _read(firebaseFirestoreProvider)
           .collection("groups")
           .doc(group.id)
           .update(group.toJson());
       return group;
+    } on FirebaseException catch (e) {
+      throw CustomException(message: e.message);
+    }
+  }
+
+  Future<void> deleteGroup(String groupId) async {
+    try {
+      await _read(firebaseFirestoreProvider)
+          .collection("groups")
+          .doc(groupId)
+          .delete();
     } on FirebaseException catch (e) {
       throw CustomException(message: e.message);
     }

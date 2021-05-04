@@ -18,7 +18,7 @@ class ContactsController extends StateNotifier<AsyncValue<Map<Contact, User>>> {
   final User? _user;
   ContactsController(this._read, this._user) : super(AsyncValue.loading());
 
-  getUsersFromContacts() async {
+  Future<void> getUsersFromContacts() async {
     state = AsyncValue.loading();
     Map<Contact, User> value = {};
     PermissionStatus permission = await Permission.contacts.status;
@@ -32,6 +32,8 @@ class ContactsController extends StateNotifier<AsyncValue<Map<Contact, User>>> {
                   .getUserByPhoneNumber(formatPhoneNumber(phone.value!));
               if (user != null &&
                   _user != null &&
+                  _user!.phoneNumber != phone.value &&
+                  _user!.id != user.id &&
                   !_user!.friendIds.contains(user.id!) &&
                   !value.containsKey(contact) &&
                   !value.containsValue(user)) {

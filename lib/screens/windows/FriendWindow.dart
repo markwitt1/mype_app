@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mype_app/components/UserDialog.dart';
 import 'package:mype_app/controllers/contacts_controller.dart';
 import 'package:mype_app/controllers/friend_requests_controller.dart';
 import 'package:mype_app/controllers/user_controller.dart';
@@ -18,7 +19,6 @@ class FriendWindow extends HookWidget {
     final friendRequestsController =
         useProvider(friendRequestsControllerProvider);
     final contactsController = useProvider(contactsControllerProvider);
-    final contactUserMap = useProvider(contactsControllerProvider.state);
     final textController = useTextEditingController();
     return Scaffold(
       appBar: AppBar(
@@ -54,26 +54,24 @@ class FriendWindow extends HookWidget {
                 decoration: InputDecoration(hintText: "Enter Friends ID"),
               ),
               IconButton(
-                  icon: Icon(Icons.person_add),
-                  onPressed: () {
-                    try {
+                icon: Icon(Icons.person_add),
+                onPressed: () {
+                  showUserDialog(context, user);
+                  /* try {
                       friendRequestsController
                           .sendFriendRequest(textController.text);
                       textController.clear();
                     } on CustomException catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           content:
-                              Text(e.message != null ? e.message! : "Error")));
-                    }
-                  })
+                              Text(e.message != null ? e.message! : "Error"))); */
+                },
+              ),
             ],
           ),
         ),
         Expanded(
-          child: contactUserMap.when(
-              data: (contactUserMap) => ContactsList(contactUserMap),
-              loading: () => Center(child: CircularProgressIndicator()),
-              error: (e, _) => Text("Error: $e")),
+          child: ContactsList(),
         ),
       ]),
     );

@@ -38,9 +38,10 @@ class UserController extends StateNotifier<User?> {
       try {
         User? user = await _read(userRepositoryProvider).updateUser(updated);
         if (user != null) state = user;
-      } on FirebaseException catch (e) {
+      } on CustomException catch (e) {
+        _read(exceptionProvider).state = e;
+        print(e.toString());
         state = null;
-        throw CustomException(message: e.message);
       }
     }
   }

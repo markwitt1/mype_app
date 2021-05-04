@@ -35,50 +35,12 @@ class MarkerRepository {
     return markers;
   }
 
-/*   addImage(Tuple2<String, File> tuple) {
-    images[tuple.value1] = tuple.value2;
-    update();
-  }
- */
-/*   downloadImages(List<String> serverNames) async {
-    for (final serverName in serverNames) {
-      Directory appDocDir = await getApplicationDocumentsDirectory();
-      File newFile = File('${appDocDir.path}/$serverName');
-
-      try {
-        await FirebaseStorage.instance
-            .ref('uploads/logo.png')
-            .writeToFile(newFile);
-        images[serverName] = newFile;
-      } on FirebaseException catch (e) {
-        e.printError();
-      }
-    }
-    update();
-  } */
-
   addMarker(MypeMarker marker) async {
     final doc = await _read(firebaseFirestoreProvider)
         .collection("markers")
         .add(marker.toJson());
     return marker.copyWith(id: doc.id);
   }
-
-/*   updateMarker(String id, MypeMarker mypeMarker) async {
-    if (id == "user") markers.remove("user");
-    final res =
-        await firestore.collection('locations').add(mypeMarker.toSimpleJson());
-
-    mypeMarker.marker = new Marker(
-        markerId: MarkerId(res.id),
-        position: mypeMarker.marker.position,
-        infoWindow: InfoWindow(
-            title: mypeMarker.title,
-            snippet: mypeMarker.description,
-            onTap: () => openMarkerWindow(res.id)));
-    markers[res.id] = mypeMarker;
-    update();
-  } */
 
   updateMarker(String id, MypeMarker mypeMarker) async {
     if (id != "user") {
@@ -92,9 +54,4 @@ class MarkerRepository {
       }
     }
   }
-
-/*   clearUserMarker() {
-    markers.remove("user");
-    update();
-  } */
 }

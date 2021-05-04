@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mype_app/controllers/groups_controller.dart';
 
 import 'package:mype_app/models/mype_marker/mype_marker.dart';
 import 'package:mype_app/screens/windows/MarkerWindow.dart';
@@ -28,6 +29,7 @@ class FireMap extends HookWidget {
   Widget build(BuildContext context) {
     final userMarker = useState<MypeMarker?>(null);
     final markersController = useProvider(markersControllerProvider);
+    final groupsController = useProvider(groupsControllerProvider);
 
     openMarkerWindow(MypeMarker mypeMarker) async {
       bool? success = await Navigator.of(context).push(MaterialPageRoute(
@@ -37,12 +39,7 @@ class FireMap extends HookWidget {
     }
 
     final googleMapController = useState<GoogleMapController?>(null);
-    //final markersController = useProvider(markersControllerProvider);
     final markersAsyncValue = useProvider(markersControllerProvider.state);
-    /*    useEffect(() {
-      markersController.getMarkers();
-    }, []); */
-
     return markersAsyncValue.when(
         loading: () => Center(
               child: CircularProgressIndicator(),
@@ -51,7 +48,6 @@ class FireMap extends HookWidget {
               child: Text("error"),
             ),
         data: (markers) {
-          print(markers);
           Set<Marker> allMarkers =
               Set.from(markers.values.map((m) => markerFromMypeMarker(
                     m,
@@ -66,23 +62,41 @@ class FireMap extends HookWidget {
             }, blue: true));
           }
 
-          return GoogleMap(
-            onLongPress: (LatLng pos) {
-              userMarker.value = MypeMarker(
-                imageIds: [],
-                groupIds: Set(),
-                latitude: pos.latitude,
-                longitude: pos.longitude,
-              );
-            },
-            onTap: (_) => userMarker.value = null,
-            initialCameraPosition:
-                CameraPosition(target: LatLng(52.520008, 13.404954), zoom: 15),
-            onMapCreated: (controller) =>
-                googleMapController.value = controller,
-            myLocationEnabled: true,
-            compassEnabled: true,
-            markers: allMarkers,
+          return Stack(
+            children: [
+              GoogleMap(
+                onLongPress: (LatLng pos) {
+                  userMarker.value = MypeMarker(
+                    imageIds: [],
+                    groupIds: Set(),
+                    latitude: pos.latitude,
+                    longitude: pos.longitude,
+                  );
+                },
+                onTap: (_) => userMarker.value = null,
+                initialCameraPosition: CameraPosition(
+                    target: LatLng(52.520008, 13.404954), zoom: 15),
+                onMapCreated: (controller) =>
+                    googleMapController.value = controller,
+                myLocationEnabled: true,
+                compassEnabled: true,
+                markers: allMarkers,
+              ),
+              Positioned(
+                top: 30,
+                left: 10,
+                child: CircleAvatar(
+                  backgroundColor: Colors.blue,
+                  child: IconButton(
+                      color: Colors.white,
+                      icon: Icon(Icons.refresh),
+                      onPressed: () {
+                        markersController.getMarkers();
+                        groupsController.getGroups();
+                      }),
+                ),
+              ),
+            ],
           );
         });
   }

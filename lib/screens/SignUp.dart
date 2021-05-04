@@ -1,16 +1,15 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mype_app/controllers/auth_controller.dart';
-import 'windows/PhoneWindow.dart';
-
-import 'LogIn.dart';
 
 class SignUp extends HookWidget {
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey<FormBuilderState>();
   String getValue(String key) => _fbKey.currentState?.value[key];
+  final Function() goToLogin;
+  SignUp({Key? key, required this.goToLogin}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     final authController = context.read(authControllerProvider);
@@ -29,21 +28,20 @@ class SignUp extends HookWidget {
                 FormBuilderTextField(
                   name: "name",
                   decoration: InputDecoration(labelText: "Name"),
-                  initialValue: "Mark Test",
+                  initialValue: kReleaseMode ? "" : "Mark Test",
                 ),
                 FormBuilderTextField(
                   name: "email",
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(labelText: "Email Address"),
-                  initialValue: "test@flutter.fl",
+                  initialValue: kReleaseMode ? "" : "test@flutter.fl",
                 ),
-                //FormBuilderPhoneField(name: "phoneNumber"),
                 FormBuilderTextField(
                   name: "phoneNumber",
-                  keyboardType: TextInputType.number,
+                  keyboardType: TextInputType.phone,
                   decoration: InputDecoration(
                       labelText: "Phone Number (with Country Code)"),
-                  initialValue: "+12345678910",
+                  initialValue: kReleaseMode ? "" : "+12345678910",
                 ),
                 FormBuilderTextField(
                   name: "password",
@@ -51,7 +49,7 @@ class SignUp extends HookWidget {
                   obscureText: true,
                   enableSuggestions: false,
                   autocorrect: false,
-                  initialValue: "rolexamg",
+                  initialValue: kReleaseMode ? "" : "rolexamg",
                 ),
                 ElevatedButton(
                   child: Text("Sign Up"),
@@ -59,30 +57,32 @@ class SignUp extends HookWidget {
                     if (_fbKey.currentState!.saveAndValidate()) {
                       print(_fbKey.currentState?.value);
                       final values = _fbKey.currentState!.value;
-                      final PhoneAuthCredential? phoneAuthCredential =
+/*                       final PhoneAuthCredential? phoneAuthCredential =
                           await Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (_) => PhoneWindow(
                             phoneNumber: values["phoneNumber"],
                           ),
                         ),
-                      );
-                      if (phoneAuthCredential != null) {
-                        authController.createUser(
-                            values["name"],
-                            values["email"],
-                            values["password"],
-                            phoneAuthCredential,
-                            values["phoneNumber"]);
-                      }
+                      ); */
+                      //if (phoneAuthCredential != null) {
+                      authController.createUser(
+                          values["name"],
+                          values["email"],
+                          values["password"],
+                          null,
+                          //phoneAuthCredential,
+                          values["phoneNumber"]);
+                      // }
                     }
                   },
                 ),
                 TextButton(
                   child: Text("Log in with existing account"),
                   onPressed: () async {
-                    Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (_) => LogIn()));
+                    goToLogin();
+                    /* Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (_) => LogIn())); */
                   },
                 ),
               ],

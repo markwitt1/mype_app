@@ -24,14 +24,19 @@ class FriendRequestsController
           "outgoing": Set(),
         });
 
-  getFriendRequests() async {
-    if (_user != null && _user!.id != null) {
-      state = await _read(friendRequestsRepositoryProvider)
-          .getFriendRequests(_user!.id!);
+  Future<void> getFriendRequests() async {
+    try {
+      if (_user != null && _user!.id != null) {
+        state = await _read(friendRequestsRepositoryProvider)
+            .getFriendRequests(_user!.id!);
+      }
+    } on CustomException catch (e) {
+      _read(exceptionProvider).state = e;
+      print(e.toString());
     }
   }
 
-  sendFriendRequest(String otherUserId) async {
+  Future<void> sendFriendRequest(String otherUserId) async {
     if ((_user != null && _user!.id != null)) {
       if (!_user!.friendIds.contains(otherUserId)) {
         try {
@@ -43,24 +48,29 @@ class FriendRequestsController
               from: _user!.id!,
               to: otherUser.id!,
             ));
-/* 
-            await _read(userRepositoryProvider).updateUser(_user!.copyWith(
-                friendIds: [..._user!.friendIds, otherUserId].toSet()));
-            final updatedOtherUser = otherUser.copyWith(
-                friendIds: [...otherUser.friendIds, _user!.id!].toSet());
-            await _read(userRepositoryProvider).updateUser(updatedOtherUser);
-            state[otherUserId] = updatedOtherUser; */
 
             bool addedNew = state["outgoing"]!.add(friendRequest);
-            if (!addedNew)
-              throw CustomException(message: "Friend request already sent");
-          } else
-            throw CustomException(message: "User does not exist");
-        } on FirebaseException catch (e) {
-          return throw CustomException(message: "Error adding friend: $e");
+            state = {...state};
+            if (!addedNew) {
+              final e = CustomException(message: "Friend request already sent");
+              _read(exceptionProvider).state = e;
+              throw e;
+            }
+          } else {
+            final e = CustomException(message: "User does not exist");
+            _read(exceptionProvider).state = e;
+            throw e;
+          }
+        } on FirebaseException catch (fe) {
+          final e = CustomException(message: "Error adding friend: $fe");
+          _read(exceptionProvider).state = e;
+          throw e;
         }
-      } else
-        throw CustomException(message: "You are already friends!");
+      } else {
+        final e = CustomException(message: "You are already friends!");
+        _read(exceptionProvider).state = e;
+        throw e;
+      }
     }
   }
 
@@ -80,6 +90,7 @@ class FriendRequestsController
           friendIds: [...otherUser.friendIds, _user!.id!].toSet()));
 
       state["incoming"]!.remove(friendRequest);
+      state = state;
     } else {
       throw CustomException(message: "Error accepting friend request");
     }
@@ -90,6 +101,7 @@ class FriendRequestsController
       _read(friendRequestsRepositoryProvider)
           .deleteFriendRequest(friendRequest.id!);
       state["incoming"]!.remove(friendRequest);
+      state = state;
     } on FirebaseException catch (e) {
       throw CustomException(message: e.message);
     }

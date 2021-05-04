@@ -20,30 +20,27 @@ class ProfilePicture extends HookWidget {
         ),
       ),
       Align(
-          alignment: Alignment.topCenter,
-          child: SizedBox(
+        alignment: Alignment.topCenter,
+        child: SizedBox(
             child: CircleAvatar(
-                radius: 40.0,
-                backgroundColor: Colors.white,
-                child: CircleAvatar(
-                  child: Align(
-                    alignment: Alignment.bottomRight,
-                    child: CircleAvatar(
-                      backgroundColor: Colors.white,
-                      radius: 12.0,
-                      child: Icon(
-                        Icons.camera_alt,
-                        size: 15.0,
-                        color: Color(0xFF404040),
-                      ),
-                    ),
-                  ),
-                  radius: 38.0,
-                  backgroundImage: image != null
-                      ? FileImage(image!) as ImageProvider
-                      : AssetImage('assets/profile.png'),
-                )),
-          )),
+          child: Align(
+            alignment: Alignment.bottomRight,
+            child: CircleAvatar(
+              backgroundColor: Colors.white,
+              radius: 12.0,
+              child: Icon(
+                Icons.camera_alt,
+                size: 15.0,
+                color: Color(0xFF404040),
+              ),
+            ),
+          ),
+          radius: 38.0,
+          backgroundImage: image != null
+              ? FileImage(image!) as ImageProvider
+              : AssetImage('assets/profile.png'),
+        )),
+      ),
     ]);
   }
 }

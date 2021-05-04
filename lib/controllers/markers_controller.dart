@@ -43,11 +43,11 @@ class MarkersController
 
   Future<void> getMarkers({bool isRefreshing = false}) async {
     if (_userId != null) {
-      if (isRefreshing) state = AsyncValue.loading();
+      state = AsyncValue.loading();
       try {
         final markers = await _read(markerRepositoryProvider).getMarkers(
             _groups.where((g) => g.id != null).map((g) => g.id!).toList());
-        if (mounted) state = AsyncValue.data(markers);
+        state = AsyncValue.data(markers);
       } on CustomException catch (e, st) {
         state = AsyncValue.error(e, st);
       }

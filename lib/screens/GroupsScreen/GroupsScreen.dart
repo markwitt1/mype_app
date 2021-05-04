@@ -37,9 +37,8 @@ class GroupsScreen extends HookWidget {
             IconButton(
                 icon: Icon(Icons.group_add),
                 onPressed: () async {
-                  final Group? newGroup = Navigator.of(context).push(
-                          MaterialPageRoute(builder: (_) => GroupWindow()))
-                      as Group?;
+                  final Group? newGroup = await Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (_) => GroupWindow()));
                   if (newGroup != null) {
                     groupsController.createGroup(newGroup);
                   }

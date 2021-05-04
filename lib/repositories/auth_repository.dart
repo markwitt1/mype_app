@@ -31,10 +31,11 @@ class AuthRepository implements BaseAuthRepository {
   User? getCurrentUser() => _read(firebaseAuthProvider).currentUser;
 
   @override
-  Future<void> signIn(String email, String password) async {
+  Future<User?> signIn(String email, String password) async {
     try {
-      await _read(firebaseAuthProvider)
+      final userCredential = await _read(firebaseAuthProvider)
           .signInWithEmailAndPassword(email: email.trim(), password: password);
+      return userCredential.user;
     } on FirebaseAuthException catch (e) {
       throw CustomException(message: e.message);
     }

@@ -15,6 +15,7 @@ import 'package:path/path.dart' as p;
 import 'package:http/http.dart' as http;
 
 import 'custom_exception.dart';
+import '../repositories/shared_prefs.dart';
 
 final imagesRepositoryProvider =
     Provider<ImagesRepository>((ref) => ImagesRepository(ref.read));
@@ -66,7 +67,7 @@ class ImagesRepository {
   }
 
   Future<File?> getImage(String imageId) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    SharedPreferences prefs = _read(sharedPrefsProvider).state!;
     final mappedPath = prefs.getString(imageId);
     if (mappedPath != null) {
       return File(mappedPath);

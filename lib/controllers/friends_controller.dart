@@ -1,6 +1,7 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mype_app/controllers/user_controller.dart';
 import 'package:mype_app/models/user_model/user_model.dart';
+import 'package:mype_app/repositories/custom_exception.dart';
 import 'package:mype_app/repositories/user_repository.dart';
 
 final friendsControllerProvider =
@@ -15,9 +16,15 @@ class FriendsController extends StateNotifier<Map<String, User>> {
   final User? _user;
   FriendsController(this._read, this._user) : super({});
 
-  getFriends() async {
+  Future<void> getFriends() async {
     if (_user?.id != null)
       state = await _read(userRepositoryProvider).getFriends(_user!.id!);
+  }
+
+  Future<void> removeFriend(String friendId) async {
+    await _read(userRepositoryProvider).removeFriend(_user!, friendId);
+    state.remove(friendId);
+    state = state;
   }
 
   getUser(id) => _read(userRepositoryProvider).getUser(id);
