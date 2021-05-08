@@ -13,10 +13,10 @@ class AuthController extends StateNotifier<User?> {
   StreamSubscription<User?>? _authStateChangesSubscription;
 
   AuthController(this._read) : super(null) {
-    _authStateChangesSubscription?.cancel();
+/*     _authStateChangesSubscription?.cancel();
     _authStateChangesSubscription = _read(authRepositoryProvider)
         .authStateChanges
-        .listen((user) => state = user);
+        .listen((user) => state = user); */
   }
 
   @override
@@ -43,6 +43,8 @@ class AuthController extends StateNotifier<User?> {
   void signOut() async {
     try {
       await _read(authRepositoryProvider).signOut();
+      state = null;
+      state = state;
     } on CustomException catch (e) {
       _read(exceptionProvider).state = e;
       print(e.toString());
