@@ -18,7 +18,7 @@ class FriendProfilePicture extends HookWidget {
     useEffect(() {
       if (fileName != null)
         imagesRepo.getImage(fileName!).then((value) => file.value = value);
-    });
+    }, []);
 
     if (fileName != null) {
       if (file.value != null)

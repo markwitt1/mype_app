@@ -12,7 +12,7 @@ class LogIn extends HookWidget {
   LogIn({Key? key, required this.goToSignUp}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    final authController = context.read(authControllerProvider);
+    final authController = useProvider(authControllerProvider);
     return Scaffold(
       appBar: AppBar(
         title: Text("Log In"),
@@ -50,11 +50,7 @@ class LogIn extends HookWidget {
                 ),
                 TextButton(
                   child: Text("Create an account"),
-                  onPressed: () async {
-/*                     Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (_) => SignUp())); */
-                    goToSignUp();
-                  },
+                  onPressed: goToSignUp,
                 ),
               ],
             ),

@@ -28,7 +28,7 @@ class PhoneWindow extends HookWidget {
         },
         codeAutoRetrievalTimeout: (String verificationId) {},
       );
-    });
+    }, []);
     return Scaffold(
       appBar: AppBar(
         title: Text("Add Group"),

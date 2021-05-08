@@ -12,7 +12,7 @@ class SignUp extends HookWidget {
   SignUp({Key? key, required this.goToLogin}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    final authController = context.read(authControllerProvider);
+    final authController = useProvider(authControllerProvider);
     return Scaffold(
       appBar: AppBar(
         title: Text("Sign Up"),
@@ -57,7 +57,7 @@ class SignUp extends HookWidget {
                     if (_fbKey.currentState!.saveAndValidate()) {
                       print(_fbKey.currentState?.value);
                       final values = _fbKey.currentState!.value;
-/*                       final PhoneAuthCredential? phoneAuthCredential =
+                      /*                       final PhoneAuthCredential? phoneAuthCredential =
                           await Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (_) => PhoneWindow(
@@ -78,13 +78,8 @@ class SignUp extends HookWidget {
                   },
                 ),
                 TextButton(
-                  child: Text("Log in with existing account"),
-                  onPressed: () async {
-                    goToLogin();
-                    /* Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (_) => LogIn())); */
-                  },
-                ),
+                    child: Text("Log in with existing account"),
+                    onPressed: goToLogin),
               ],
             ),
           ),

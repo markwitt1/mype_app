@@ -7,7 +7,7 @@ import 'package:mype_app/controllers/friends_controller.dart';
 import 'package:mype_app/controllers/user_controller.dart';
 import 'package:mype_app/models/user_model/user_model.dart';
 
-showUserDialog(BuildContext context, user) => showGeneralDialog(
+Future<void> showUserDialog(BuildContext context, user) => showGeneralDialog(
     barrierColor: Colors.black.withOpacity(0.5),
     transitionBuilder: (context, a1, a2, widget) {
       final curvedValue = Curves.easeInOutBack.transform(a1.value) - 1.0;
@@ -25,15 +25,6 @@ showUserDialog(BuildContext context, user) => showGeneralDialog(
     context: context,
     pageBuilder: (context, animation1, animation2) => UserDialog(user));
 
-/* showDialog(
-    context: context,
-    builder: (_) {
-      /* return Transform.translate(
-        offset: Offset(animation.value, 0),
-        child: */
-      return UserDialog(user);
-    });
- */
 class UserDialog extends HookWidget {
   final User user;
 
@@ -87,12 +78,14 @@ class UserDialog extends HookWidget {
                         onPressed: isFriends
                             ? () {
                                 friendsController.removeFriend(user.id!);
+                                Navigator.of(context).pop();
                               }
                             : requestIncoming
                                 ? () {
                                     friendRequestsController.accept(
                                         friendRequests["incoming"]!.firstWhere(
                                             (fr) => fr.from == user.id!));
+                                    Navigator.of(context).pop();
                                   }
                                 : requestOutgoing
                                     ? null

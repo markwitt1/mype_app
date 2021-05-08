@@ -5,7 +5,6 @@ import 'package:mype_app/components/BadText.dart';
 import 'package:mype_app/components/FriendProfilePicture.dart';
 import 'package:mype_app/controllers/contacts_controller.dart';
 import 'package:mype_app/controllers/friend_requests_controller.dart';
-import 'package:mype_app/controllers/user_controller.dart';
 import './UserDialog.dart';
 
 class ContactsList extends HookWidget {
@@ -14,7 +13,6 @@ class ContactsList extends HookWidget {
   Widget build(BuildContext context) {
     final contactsController = useProvider(contactsControllerProvider);
     final contacts = useProvider(contactsControllerProvider.state);
-    final user = useProvider(userControllerProvider.state);
     final friendRequestsController =
         useProvider(friendRequestsControllerProvider);
     final friendRequests = useProvider(friendRequestsControllerProvider.state);

@@ -4,8 +4,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mype_app/components/UserDialog.dart';
 import 'package:mype_app/controllers/contacts_controller.dart';
 import 'package:mype_app/controllers/friend_requests_controller.dart';
+import 'package:mype_app/controllers/friends_controller.dart';
 import 'package:mype_app/controllers/user_controller.dart';
-import 'package:mype_app/repositories/custom_exception.dart';
 import 'package:mype_app/components/ContactsList.dart';
 import 'package:mype_app/components/CopyButton.dart';
 import 'package:mype_app/components/IncomingFriendRequests.dart';
@@ -16,10 +16,13 @@ class FriendWindow extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final user = useProvider(userControllerProvider.state);
+    final friendsController = useProvider(friendsControllerProvider);
     final friendRequestsController =
         useProvider(friendRequestsControllerProvider);
     final contactsController = useProvider(contactsControllerProvider);
-    final textController = useTextEditingController();
+    final textController =
+        useTextEditingController.fromValue(TextEditingValue.empty);
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Add Friend"),
@@ -55,16 +58,15 @@ class FriendWindow extends HookWidget {
               ),
               IconButton(
                 icon: Icon(Icons.person_add),
-                onPressed: () {
-                  showUserDialog(context, user);
-                  /* try {
-                      friendRequestsController
-                          .sendFriendRequest(textController.text);
-                      textController.clear();
-                    } on CustomException catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content:
-                              Text(e.message != null ? e.message! : "Error"))); */
+                onPressed: () async {
+                  if (textController.text != "") {
+                    final otherUser =
+                        await friendsController.getUser(textController.text);
+                    textController.clear();
+
+                    if (otherUser != null)
+                      await showUserDialog(context, otherUser);
+                  }
                 },
               ),
             ],

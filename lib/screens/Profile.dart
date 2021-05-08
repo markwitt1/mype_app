@@ -29,7 +29,7 @@ class Profile extends HookWidget {
           }
         });
       }
-    });
+    }, []);
 
     Future<void> pickProfilePicture() async {
       final source = await pickImageSource(context);
