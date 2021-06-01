@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mype_app/controllers/auth_controller.dart';
 import 'package:mype_app/models/user_model/user_model.dart';
@@ -18,10 +21,11 @@ class UserController extends StateNotifier<User?> {
   UserController(this._read, this._userId) : super(null);
 
   Future<void> appStarted() async {
-    if (_userId != null) {
+    if (mounted && _userId != null) {
       try {
         User? user = await _read(userRepositoryProvider).getUser(_userId!);
         state = user;
+        addToken();
       } on FirebaseException catch (e) {
         state = null;
         throw CustomException(message: e.message);
@@ -42,6 +46,18 @@ class UserController extends StateNotifier<User?> {
         _read(exceptionProvider).state = e;
         print(e.toString());
         state = null;
+      }
+    }
+  }
+
+  addToken() async {
+    if (mounted) {
+      final token = await FirebaseMessaging.instance.getToken();
+
+      if (state != null && token != null && !state!.tokens.contains(token)) {
+        final updated = await _read(userRepositoryProvider)
+            .updateUser(state!.copyWith(tokens: [...state!.tokens, token]));
+        state = updated;
       }
     }
   }

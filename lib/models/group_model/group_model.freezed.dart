@@ -141,9 +141,8 @@ class __$GroupCopyWithImpl<$Res> extends _$GroupCopyWithImpl<$Res>
   }
 }
 
-@JsonSerializable()
-
 /// @nodoc
+@JsonSerializable()
 class _$_Group with DiagnosticableTreeMixin implements _Group {
   const _$_Group(
       {this.id,

@@ -15,6 +15,9 @@ _$_User _$_$_UserFromJson(Map<String, dynamic> json) {
     friendIds:
         (json['friendIds'] as List<dynamic>).map((e) => e as String).toSet(),
     profilePicture: json['profilePicture'] as String?,
+    tokens:
+        (json['tokens'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+            [],
   );
 }
 
@@ -25,4 +28,5 @@ Map<String, dynamic> _$_$_UserToJson(_$_User instance) => <String, dynamic>{
       'phoneNumber': instance.phoneNumber,
       'friendIds': instance.friendIds.toList(),
       'profilePicture': instance.profilePicture,
+      'tokens': instance.tokens,
     };

@@ -1,3 +1,4 @@
 {
-    "dart.previewFlutterUiGuides": true
+  "dart.previewFlutterUiGuides": true,
+  "eslint.workingDirectories": ["functions"]
 }

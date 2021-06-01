@@ -25,14 +25,16 @@ class FriendRequestsController
         });
 
   Future<void> getFriendRequests() async {
-    try {
-      if (_user != null && _user!.id != null) {
-        state = await _read(friendRequestsRepositoryProvider)
-            .getFriendRequests(_user!.id!);
+    if (mounted) {
+      try {
+        if (_user != null && _user!.id != null) {
+          state = await _read(friendRequestsRepositoryProvider)
+              .getFriendRequests(_user!.id!);
+        }
+      } on CustomException catch (e) {
+        _read(exceptionProvider).state = e;
+        print(e.toString());
       }
-    } on CustomException catch (e) {
-      _read(exceptionProvider).state = e;
-      print(e.toString());
     }
   }
 

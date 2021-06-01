@@ -198,9 +198,8 @@ class __$MypeMarkerCopyWithImpl<$Res> extends _$MypeMarkerCopyWithImpl<$Res>
   }
 }
 
-@JsonSerializable()
-
 /// @nodoc
+@JsonSerializable()
 class _$_MypeMarker with DiagnosticableTreeMixin implements _MypeMarker {
   const _$_MypeMarker(
       {this.id,

@@ -33,7 +33,7 @@ class IncomingFriendRequests extends HookWidget {
                             if (snapshot.hasData) {
                               return ListTile(
                                 onTap: () =>
-                                    showUserDialog(context, snapshot.data),
+                                    showUserDialog(context, snapshot.data!),
                                 title: Text(
                                   "From: ${snapshot.data!.name}",
                                 ),

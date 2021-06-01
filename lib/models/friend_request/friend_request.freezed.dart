@@ -148,9 +148,8 @@ class __$FriendRequestCopyWithImpl<$Res>
   }
 }
 
-@JsonSerializable()
-
 /// @nodoc
+@JsonSerializable()
 class _$_FriendRequest with DiagnosticableTreeMixin implements _FriendRequest {
   const _$_FriendRequest(
       {this.id, required this.from, required this.to, this.message = ""});

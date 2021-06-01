@@ -84,6 +84,7 @@ class UserRepository implements BaseUserRepository {
             .collection("users")
             .doc(user.id)
             .set(user.toJson());
+
         return user;
       } on FirebaseException catch (fe) {
         final e = CustomException(message: fe.message);

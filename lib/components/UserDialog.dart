@@ -7,47 +7,69 @@ import 'package:mype_app/controllers/friends_controller.dart';
 import 'package:mype_app/controllers/user_controller.dart';
 import 'package:mype_app/models/user_model/user_model.dart';
 
-Future<void> showUserDialog(BuildContext context, user) => showGeneralDialog(
-    barrierColor: Colors.black.withOpacity(0.5),
-    transitionBuilder: (context, a1, a2, widget) {
-      final curvedValue = Curves.easeInOutBack.transform(a1.value) - 1.0;
-      return Transform(
-        transform: Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
-        child: Opacity(
-          opacity: a1.value,
-          child: UserDialog(user),
-        ),
-      );
-    },
-    transitionDuration: Duration(milliseconds: 200),
-    barrierDismissible: true,
-    barrierLabel: '',
-    context: context,
-    pageBuilder: (context, animation1, animation2) => UserDialog(user));
+Future<void> showUserDialog(BuildContext context, User user,
+        {bool newFriendRequest = false}) =>
+    showGeneralDialog(
+        barrierColor: Colors.black.withOpacity(0.5),
+        transitionBuilder: (context, a1, a2, widget) {
+          final curvedValue = Curves.easeInOutBack.transform(a1.value) - 1.0;
+          return Transform(
+            transform: Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
+            child: Opacity(
+              opacity: a1.value,
+              child: UserDialog(
+                user,
+                newFriendRequest: newFriendRequest,
+              ),
+            ),
+          );
+        },
+        transitionDuration: Duration(milliseconds: 200),
+        barrierDismissible: true,
+        barrierLabel: '',
+        context: context,
+        pageBuilder: (context, animation1, animation2) => UserDialog(user));
 
 class UserDialog extends HookWidget {
   final User user;
 
-  const UserDialog(this.user, {Key? key}) : super(key: key);
+  const UserDialog(this.user, {Key? key, bool newFriendRequest = false})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final friendsController = useProvider(friendsControllerProvider);
+    final friends = useProvider(friendsControllerProvider.state);
+
     final friendRequestsController =
         useProvider(friendRequestsControllerProvider);
     final friendRequests = useProvider(friendRequestsControllerProvider.state);
-    final ownUser = useProvider(userControllerProvider.state);
 
+    useEffect(() {
+      friendRequestsController.getFriendRequests();
+    }, []);
     final requestOutgoing = friendRequests["outgoing"]!.any(
       ((fr) => fr.to == user.id!),
     );
     final requestIncoming = friendRequests["incoming"]!.any(
       ((fr) => fr.from == user.id!),
     );
-    final isFriends = ownUser!.friendIds.contains(user.id);
+    final isFriends = friends.containsKey(user.id);
 
     return Dialog(
       child: Column(mainAxisSize: MainAxisSize.min, children: [
+        Row(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Expanded(
+              child: Text(
+                "New Friend Request!",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 18),
+              ),
+            ),
+          ],
+        ),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(

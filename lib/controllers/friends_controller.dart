@@ -16,7 +16,7 @@ class FriendsController extends StateNotifier<Map<String, User>> {
   FriendsController(this._read, this._user) : super({});
 
   Future<void> getFriends() async {
-    if (_user?.id != null)
+    if (mounted && _user?.id != null)
       state = await _read(userRepositoryProvider).getFriends(_user!.id!);
   }
 

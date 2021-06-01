@@ -26,7 +26,8 @@ class _$UserTearOff {
       required String email,
       required String phoneNumber,
       required Set<String> friendIds,
-      required String? profilePicture}) {
+      required String? profilePicture,
+      List<String> tokens = const []}) {
     return _User(
       id: id,
       name: name,
@@ -34,6 +35,7 @@ class _$UserTearOff {
       phoneNumber: phoneNumber,
       friendIds: friendIds,
       profilePicture: profilePicture,
+      tokens: tokens,
     );
   }
 
@@ -54,6 +56,7 @@ mixin _$User {
   String get phoneNumber => throw _privateConstructorUsedError;
   Set<String> get friendIds => throw _privateConstructorUsedError;
   String? get profilePicture => throw _privateConstructorUsedError;
+  List<String> get tokens => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -70,7 +73,8 @@ abstract class $UserCopyWith<$Res> {
       String email,
       String phoneNumber,
       Set<String> friendIds,
-      String? profilePicture});
+      String? profilePicture,
+      List<String> tokens});
 }
 
 /// @nodoc
@@ -89,6 +93,7 @@ class _$UserCopyWithImpl<$Res> implements $UserCopyWith<$Res> {
     Object? phoneNumber = freezed,
     Object? friendIds = freezed,
     Object? profilePicture = freezed,
+    Object? tokens = freezed,
   }) {
     return _then(_value.copyWith(
       id: id == freezed
@@ -115,6 +120,10 @@ class _$UserCopyWithImpl<$Res> implements $UserCopyWith<$Res> {
           ? _value.profilePicture
           : profilePicture // ignore: cast_nullable_to_non_nullable
               as String?,
+      tokens: tokens == freezed
+          ? _value.tokens
+          : tokens // ignore: cast_nullable_to_non_nullable
+              as List<String>,
     ));
   }
 }
@@ -130,7 +139,8 @@ abstract class _$UserCopyWith<$Res> implements $UserCopyWith<$Res> {
       String email,
       String phoneNumber,
       Set<String> friendIds,
-      String? profilePicture});
+      String? profilePicture,
+      List<String> tokens});
 }
 
 /// @nodoc
@@ -150,6 +160,7 @@ class __$UserCopyWithImpl<$Res> extends _$UserCopyWithImpl<$Res>
     Object? phoneNumber = freezed,
     Object? friendIds = freezed,
     Object? profilePicture = freezed,
+    Object? tokens = freezed,
   }) {
     return _then(_User(
       id: id == freezed
@@ -176,13 +187,16 @@ class __$UserCopyWithImpl<$Res> extends _$UserCopyWithImpl<$Res>
           ? _value.profilePicture
           : profilePicture // ignore: cast_nullable_to_non_nullable
               as String?,
+      tokens: tokens == freezed
+          ? _value.tokens
+          : tokens // ignore: cast_nullable_to_non_nullable
+              as List<String>,
     ));
   }
 }
 
-@JsonSerializable()
-
 /// @nodoc
+@JsonSerializable()
 class _$_User with DiagnosticableTreeMixin implements _User {
   _$_User(
       {@JsonKey(name: "code", toJson: createCode) this.id,
@@ -190,7 +204,8 @@ class _$_User with DiagnosticableTreeMixin implements _User {
       required this.email,
       required this.phoneNumber,
       required this.friendIds,
-      required this.profilePicture});
+      required this.profilePicture,
+      this.tokens = const []});
 
   factory _$_User.fromJson(Map<String, dynamic> json) =>
       _$_$_UserFromJson(json);
@@ -208,10 +223,13 @@ class _$_User with DiagnosticableTreeMixin implements _User {
   final Set<String> friendIds;
   @override
   final String? profilePicture;
+  @JsonKey(defaultValue: const [])
+  @override
+  final List<String> tokens;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'User(id: $id, name: $name, email: $email, phoneNumber: $phoneNumber, friendIds: $friendIds, profilePicture: $profilePicture)';
+    return 'User(id: $id, name: $name, email: $email, phoneNumber: $phoneNumber, friendIds: $friendIds, profilePicture: $profilePicture, tokens: $tokens)';
   }
 
   @override
@@ -224,7 +242,8 @@ class _$_User with DiagnosticableTreeMixin implements _User {
       ..add(DiagnosticsProperty('email', email))
       ..add(DiagnosticsProperty('phoneNumber', phoneNumber))
       ..add(DiagnosticsProperty('friendIds', friendIds))
-      ..add(DiagnosticsProperty('profilePicture', profilePicture));
+      ..add(DiagnosticsProperty('profilePicture', profilePicture))
+      ..add(DiagnosticsProperty('tokens', tokens));
   }
 
   @override
@@ -245,7 +264,9 @@ class _$_User with DiagnosticableTreeMixin implements _User {
                     .equals(other.friendIds, friendIds)) &&
             (identical(other.profilePicture, profilePicture) ||
                 const DeepCollectionEquality()
-                    .equals(other.profilePicture, profilePicture)));
+                    .equals(other.profilePicture, profilePicture)) &&
+            (identical(other.tokens, tokens) ||
+                const DeepCollectionEquality().equals(other.tokens, tokens)));
   }
 
   @override
@@ -256,7 +277,8 @@ class _$_User with DiagnosticableTreeMixin implements _User {
       const DeepCollectionEquality().hash(email) ^
       const DeepCollectionEquality().hash(phoneNumber) ^
       const DeepCollectionEquality().hash(friendIds) ^
-      const DeepCollectionEquality().hash(profilePicture);
+      const DeepCollectionEquality().hash(profilePicture) ^
+      const DeepCollectionEquality().hash(tokens);
 
   @JsonKey(ignore: true)
   @override
@@ -276,7 +298,8 @@ abstract class _User implements User {
       required String email,
       required String phoneNumber,
       required Set<String> friendIds,
-      required String? profilePicture}) = _$_User;
+      required String? profilePicture,
+      List<String> tokens}) = _$_User;
 
   factory _User.fromJson(Map<String, dynamic> json) = _$_User.fromJson;
 
@@ -293,6 +316,8 @@ abstract class _User implements User {
   Set<String> get friendIds => throw _privateConstructorUsedError;
   @override
   String? get profilePicture => throw _privateConstructorUsedError;
+  @override
+  List<String> get tokens => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   _$UserCopyWith<_User> get copyWith => throw _privateConstructorUsedError;

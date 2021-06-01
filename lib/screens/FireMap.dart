@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:location/location.dart';
 import 'package:mype_app/controllers/groups_controller.dart';
 
 import 'package:mype_app/models/mype_marker/mype_marker.dart';
@@ -31,6 +32,20 @@ class FireMap extends HookWidget {
     final markersController = useProvider(markersControllerProvider);
     final groupsController = useProvider(groupsControllerProvider);
 
+    final googleMapController = useState<GoogleMapController?>(null);
+    final markersAsyncValue = useProvider(markersControllerProvider.state);
+    Future<LatLng?> getUserLocation() async {
+      Location location = new Location();
+      bool _serviceEnabled = await location.serviceEnabled();
+      if (!_serviceEnabled) {
+        _serviceEnabled = await location.requestService();
+      }
+      if (!_serviceEnabled) return null;
+
+      final data = await location.getLocation();
+      return LatLng(data.latitude!, data.longitude!);
+    }
+
     openMarkerWindow(MypeMarker mypeMarker) async {
       bool? success = await Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => MarkerWindow(mypeMarker: mypeMarker)));
@@ -38,8 +53,6 @@ class FireMap extends HookWidget {
       markersController.getMarkers();
     }
 
-    final googleMapController = useState<GoogleMapController?>(null);
-    final markersAsyncValue = useProvider(markersControllerProvider.state);
     return markersAsyncValue.when(
         loading: () => Center(
               child: CircularProgressIndicator(),
@@ -65,6 +78,9 @@ class FireMap extends HookWidget {
           return Stack(
             children: [
               GoogleMap(
+                myLocationButtonEnabled: true,
+                initialCameraPosition: CameraPosition(
+                    target: LatLng(52.520008, 13.404954), zoom: 15),
                 onLongPress: (LatLng pos) {
                   userMarker.value = MypeMarker(
                     imageIds: [],
@@ -74,10 +90,15 @@ class FireMap extends HookWidget {
                   );
                 },
                 onTap: (_) => userMarker.value = null,
-                initialCameraPosition: CameraPosition(
-                    target: LatLng(52.520008, 13.404954), zoom: 15),
-                onMapCreated: (controller) =>
-                    googleMapController.value = controller,
+                onMapCreated: (controller) {
+                  googleMapController.value = controller;
+                  getUserLocation().then((location) {
+                    if (location != null) {
+                      googleMapController.value!
+                          .moveCamera(CameraUpdate.newLatLng(location));
+                    }
+                  });
+                },
                 myLocationEnabled: true,
                 compassEnabled: true,
                 markers: allMarkers,
