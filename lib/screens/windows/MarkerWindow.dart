@@ -9,6 +9,7 @@ import 'package:mype_app/controllers/markers_controller.dart';
 import 'package:mype_app/models/group_model/group_model.dart';
 import 'package:mype_app/models/mype_marker/mype_marker.dart';
 import 'package:mype_app/repositories/images_repository.dart';
+import 'package:photo_view/photo_view.dart';
 import '../../utils/pickImageSource.dart';
 
 class MarkerWindow extends HookWidget {
@@ -87,9 +88,29 @@ class MarkerWindow extends HookWidget {
                                           ConnectionState.done
                                       ? Stack(
                                           children: [
-                                            Image.file(
-                                              snapshot.data!,
-                                              fit: BoxFit.fitWidth,
+                                            GestureDetector(
+                                              onTap: () => Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (_) => PhotoView(
+                                                      onTapUp: (_, __, ___) =>
+                                                          Navigator.pop(
+                                                              context),
+                                                      imageProvider: FileImage(
+                                                        snapshot.data!,
+                                                      ),
+                                                      heroAttributes:
+                                                          const PhotoViewHeroAttributes(
+                                                              tag: "imageTag"),
+                                                    ),
+                                                  )),
+                                              child: Hero(
+                                                tag: "imageTag",
+                                                child: Image.file(
+                                                  snapshot.data!,
+                                                  fit: BoxFit.fitWidth,
+                                                ),
+                                              ),
                                             ),
                                             Positioned(
                                                 top: -5,

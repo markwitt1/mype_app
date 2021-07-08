@@ -58,18 +58,19 @@ class UserDialog extends HookWidget {
 
     return Dialog(
       child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Expanded(
-              child: Text(
-                "New Friend Request!",
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 18),
+        if (requestIncoming)
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Expanded(
+                child: Text(
+                  "New Friend Request!",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 18),
+                ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
