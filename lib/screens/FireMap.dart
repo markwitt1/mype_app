@@ -7,6 +7,7 @@ import 'package:mype_app/controllers/groups_controller.dart';
 
 import 'package:mype_app/models/mype_marker/mype_marker.dart';
 import 'package:mype_app/screens/windows/MarkerWindow.dart';
+import 'package:mype_app/utils/useKeepAlive.dart';
 import '../controllers/markers_controller.dart';
 
 Marker markerFromMypeMarker(MypeMarker mypeMarker, void Function() open,
@@ -28,11 +29,13 @@ Marker markerFromMypeMarker(MypeMarker mypeMarker, void Function() open,
 class FireMap extends HookWidget {
   @override
   Widget build(BuildContext context) {
+    final cameraPosition =
+        useState(CameraPosition(target: LatLng(53.520008, 13.404954), zoom: 8));
+    useAutomaticKeepAlive(wantKeepAlive: true);
     final userMarker = useState<MypeMarker?>(null);
     final markersController = useProvider(markersControllerProvider);
     final groupsController = useProvider(groupsControllerProvider);
 
-    final googleMapController = useState<GoogleMapController?>(null);
     final markersAsyncValue = useProvider(markersControllerProvider.state);
     Future<LatLng?> getUserLocation() async {
       Location location = new Location();
@@ -45,6 +48,13 @@ class FireMap extends HookWidget {
       final data = await location.getLocation();
       return LatLng(data.latitude!, data.longitude!);
     }
+
+    useEffect(() {
+      getUserLocation().then((value) {
+        if (value != null)
+          cameraPosition.value = CameraPosition(target: value, zoom: 15);
+      });
+    }, []);
 
     openMarkerWindow(MypeMarker mypeMarker) async {
       bool? success = await Navigator.of(context).push(MaterialPageRoute(
@@ -78,9 +88,9 @@ class FireMap extends HookWidget {
           return Stack(
             children: [
               GoogleMap(
+                onCameraMove: (pos) => cameraPosition.value = pos,
                 myLocationButtonEnabled: true,
-                initialCameraPosition: CameraPosition(
-                    target: LatLng(52.520008, 13.404954), zoom: 15),
+                initialCameraPosition: cameraPosition.value,
                 onLongPress: (LatLng pos) {
                   userMarker.value = MypeMarker(
                     imageIds: [],
@@ -91,13 +101,13 @@ class FireMap extends HookWidget {
                 },
                 onTap: (_) => userMarker.value = null,
                 onMapCreated: (controller) {
-                  googleMapController.value = controller;
+/*                   googleMapController.value = controller;
                   getUserLocation().then((location) {
                     if (location != null) {
                       googleMapController.value!
                           .moveCamera(CameraUpdate.newLatLng(location));
                     }
-                  });
+                  }); */
                 },
                 myLocationEnabled: true,
                 compassEnabled: true,

@@ -4,7 +4,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mype_app/components/FriendProfilePicture.dart';
 import 'package:mype_app/controllers/friend_requests_controller.dart';
 import 'package:mype_app/controllers/friends_controller.dart';
-import 'package:mype_app/controllers/user_controller.dart';
 import 'package:mype_app/models/user_model/user_model.dart';
 
 Future<void> showUserDialog(BuildContext context, User user,

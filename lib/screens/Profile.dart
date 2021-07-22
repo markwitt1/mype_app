@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -18,18 +16,6 @@ class Profile extends HookWidget {
     final imagesRepo = useProvider(imagesRepositoryProvider);
     final nameController = useTextEditingController(text: user!.name);
     final nameEdit = useState(false);
-    final profilePictureFile = useState<AsyncValue<File>>(AsyncValue.loading());
-    useEffect(() {
-      if (user.profilePicture != null &&
-          profilePictureFile.value.data?.value == null) {
-        profilePictureFile.value == AsyncValue.loading();
-        imagesRepo.getImage(user.profilePicture!).then((value) {
-          if (value != null) {
-            profilePictureFile.value = AsyncValue.data(value);
-          }
-        });
-      }
-    }, []);
 
     Future<void> pickProfilePicture() async {
       final source = await pickImageSource(context);
@@ -39,7 +25,6 @@ class Profile extends HookWidget {
           try {
             final imageId = await imagesRepo.upload(pickedImage);
             userController.updateUser(user.copyWith(profilePicture: imageId));
-            profilePictureFile.value = AsyncValue.data(pickedImage);
           } catch (e) {
             throw e;
           }
@@ -64,14 +49,7 @@ class Profile extends HookWidget {
                     Column(children: [
                       GestureDetector(
                           onTap: pickProfilePicture,
-                          child: user.profilePicture == null
-                              ? ProfilePicture()
-                              : profilePictureFile.value.when(
-                                  data: (file) => ProfilePicture(
-                                        image: file,
-                                      ),
-                                  loading: () => CircularProgressIndicator(),
-                                  error: (e, _) => Text("error")))
+                          child: ProfilePicture(imageId: user.profilePicture))
                     ]),
                     Expanded(
                       child: Padding(

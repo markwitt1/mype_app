@@ -8,7 +8,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mype_app/components/UserDialog.dart';
 import 'package:mype_app/controllers/friend_requests_controller.dart';
-import 'package:mype_app/controllers/user_controller.dart';
 import 'package:mype_app/repositories/custom_exception.dart';
 import 'package:mype_app/repositories/user_repository.dart';
 import 'package:mype_app/screens/Home.dart';
@@ -48,7 +47,6 @@ class HomeScreen extends HookWidget {
     final friendRequestsController =
         useProvider(friendRequestsControllerProvider);
     final friendsController = useProvider(friendsControllerProvider);
-    final userController = useProvider(userControllerProvider);
 
     final signUpPage = useState(true);
 

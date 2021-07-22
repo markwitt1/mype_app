@@ -15,7 +15,6 @@ import 'package:path/path.dart' as p;
 import 'package:http/http.dart' as http;
 
 import 'custom_exception.dart';
-import '../repositories/shared_prefs.dart';
 
 final imagesRepositoryProvider =
     Provider<ImagesRepository>((ref) => ImagesRepository(ref.read));
@@ -66,7 +65,7 @@ class ImagesRepository {
     }
   }
 
-  Future<File?> getImage(String imageId) async {
+/*   Future<File?> getImage(String imageId) async {
     SharedPreferences prefs = _read(sharedPrefsProvider).state!;
     final mappedPath = prefs.getString(imageId);
     if (mappedPath != null) {
@@ -81,17 +80,37 @@ class ImagesRepository {
         return file;
       }
     }
-  }
+  } */
 
-  Future<File?> downloadFromFirebase(String serverFileName) async {
+  Future<File?> downloadFromFirebase(String imageId) async {
     if (await Permission.storage.request().isGranted) {
-      Directory appDocDir = await getApplicationDocumentsDirectory();
-      final file = File('${appDocDir.path}/$serverFileName');
-      await _read(firebaseStorageProvider)
-          .ref(serverFileName)
-          .writeToFile(file);
-      print("downloaded $file");
-      return file;
+      final externalDir = await getExternalStorageDirectory();
+      if (externalDir != null) {
+        final imagesDir = Directory(externalDir.path + "/images");
+        if (!await imagesDir.exists()) {
+          await imagesDir.create();
+        }
+        final file = File('${imagesDir.path}/$imageId');
+        await _read(firebaseStorageProvider).ref(imageId).writeToFile(file);
+        print("downloaded $file");
+        return file;
+      }
     }
   }
+
+  Future<String?> getImageUrl(String imageId) {
+    return _read(firebaseStorageProvider).ref(imageId).getDownloadURL();
+  }
+
+/*   saveToGallery(String imageId) async {
+    final file = await downloadFromFirebase(imageId);
+    if (file != null) {
+      final saved = await GallerySaver.saveImage(file.path);
+      if (saved != true) {
+        throw CustomException(message: "image couldn't be saved to gallery");
+      }
+    } else {
+      throw CustomException(message: "download failed");
+    }
+  } */
 }
