@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mype_app/components/BadText.dart';
+import 'package:mype_app/controllers/filter_controller.dart';
 import 'package:mype_app/controllers/groups_controller.dart';
+import 'package:mype_app/controllers/navigation_controller.dart';
 import 'package:mype_app/screens/windows/GroupWindow.dart';
 
 class GroupsList extends HookWidget {
@@ -12,6 +14,8 @@ class GroupsList extends HookWidget {
   Widget build(BuildContext context) {
     final groupsController = useProvider(groupsControllerProvider);
     final groups = useProvider(groupsControllerProvider.state);
+    final filterController = useProvider(filterControllerProvider);
+    final navigationController = useProvider(navigationControllerProvider);
 
     if (groups.isNotEmpty)
       return RefreshIndicator(
@@ -26,8 +30,9 @@ class GroupsList extends HookWidget {
                   final updatedGroup = await Navigator.of(context).push(
                       MaterialPageRoute(
                           builder: (_) => GroupWindow(group: groups[key])));
-                  if (updatedGroup != null)
+                  if (updatedGroup != null) {
                     groupsController.updateGroup(updatedGroup);
+                  }
                 },
                 trailing: IconButton(
                   icon: Icon(
@@ -35,7 +40,8 @@ class GroupsList extends HookWidget {
                     color: Colors.red,
                   ),
                   onPressed: () {
-                    //TODO:filter
+                    filterController.setGroups(Set.from([groups[key]!]));
+                    navigationController.navigate(0);
                   },
                 ),
               );

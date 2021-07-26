@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mype_app/components/FriendsList.dart';
 import 'package:mype_app/components/GroupsList.dart';
 import 'package:mype_app/controllers/groups_controller.dart';
+import 'package:mype_app/controllers/navigation_controller.dart';
 import 'package:mype_app/models/group_model/group_model.dart';
 import 'package:mype_app/screens/windows/FriendWindow.dart';
 import 'package:mype_app/screens/windows/GroupWindow.dart';

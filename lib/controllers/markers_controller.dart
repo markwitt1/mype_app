@@ -1,5 +1,6 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mype_app/controllers/auth_controller.dart';
+import 'package:mype_app/controllers/filter_controller.dart';
 import 'package:mype_app/controllers/groups_controller.dart';
 import 'package:mype_app/models/group_model/group_model.dart';
 import 'package:mype_app/models/mype_marker/mype_marker.dart';
@@ -23,15 +24,18 @@ import 'package:mype_app/repositories/marker_repository.dart';
 // ignore: top_level_function_literal_block
 final markersControllerProvider = StateNotifierProvider((ref) {
   final user = ref.watch(authControllerProvider.state);
-  final groups = ref.watch(groupsControllerProvider.state).values.toList();
-  return MarkersController(ref.read, user?.uid, groups)..getMarkers();
+  final allGroups = ref.watch(groupsControllerProvider.state).values.toSet();
+  final filterGroups = ref.watch(filterControllerProvider.state);
+  return MarkersController(
+      ref.read, user?.uid, filterGroups == null ? allGroups : filterGroups)
+    ..getMarkers();
 });
 
 class MarkersController
     extends StateNotifier<AsyncValue<Map<String, MypeMarker>>> {
   final Reader _read;
   final String? _userId;
-  final List<Group> _groups;
+  final Set<Group> _groups;
 
   MarkersController(this._read, this._userId, this._groups)
       : super(AsyncValue.loading());

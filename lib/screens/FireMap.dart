@@ -3,9 +3,12 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:location/location.dart';
+import 'package:mype_app/components/FilterIcon.dart';
+import 'package:mype_app/controllers/filter_controller.dart';
 import 'package:mype_app/controllers/groups_controller.dart';
 
 import 'package:mype_app/models/mype_marker/mype_marker.dart';
+import 'package:mype_app/screens/windows/FilterWindow.dart';
 import 'package:mype_app/screens/windows/MarkerWindow.dart';
 import 'package:mype_app/utils/useKeepAlive.dart';
 import '../controllers/markers_controller.dart';
@@ -36,6 +39,7 @@ class FireMap extends HookWidget {
     final markersController = useProvider(markersControllerProvider);
     final groupsController = useProvider(groupsControllerProvider);
 
+    final filteredGroups = useProvider(filterControllerProvider.state);
     final markersAsyncValue = useProvider(markersControllerProvider.state);
     Future<LatLng?> getUserLocation() async {
       Location location = new Location();
@@ -63,7 +67,7 @@ class FireMap extends HookWidget {
       markersController.getMarkers();
     }
 
-    return markersAsyncValue.when(
+    final myGoogleMap = markersAsyncValue.when(
         loading: () => Center(
               child: CircularProgressIndicator(),
             ),
@@ -85,50 +89,51 @@ class FireMap extends HookWidget {
             }, blue: true));
           }
 
-          return Stack(
-            children: [
-              GoogleMap(
-                onCameraMove: (pos) => cameraPosition.value = pos,
-                myLocationButtonEnabled: true,
-                initialCameraPosition: cameraPosition.value,
-                onLongPress: (LatLng pos) {
-                  userMarker.value = MypeMarker(
-                    imageIds: [],
-                    groupIds: Set(),
-                    latitude: pos.latitude,
-                    longitude: pos.longitude,
-                  );
-                },
-                onTap: (_) => userMarker.value = null,
-                onMapCreated: (controller) {
+          return GoogleMap(
+            onCameraMove: (pos) => cameraPosition.value = pos,
+            myLocationButtonEnabled: true,
+            initialCameraPosition: cameraPosition.value,
+            onLongPress: (LatLng pos) {
+              userMarker.value = MypeMarker(
+                imageIds: [],
+                groupIds: Set(),
+                latitude: pos.latitude,
+                longitude: pos.longitude,
+              );
+            },
+            onTap: (_) => userMarker.value = null,
+            onMapCreated: (controller) {
 /*                   googleMapController.value = controller;
-                  getUserLocation().then((location) {
-                    if (location != null) {
-                      googleMapController.value!
-                          .moveCamera(CameraUpdate.newLatLng(location));
-                    }
-                  }); */
-                },
-                myLocationEnabled: true,
-                compassEnabled: true,
-                markers: allMarkers,
-              ),
-              Positioned(
-                top: 30,
-                left: 10,
-                child: CircleAvatar(
-                  backgroundColor: Colors.blue,
-                  child: IconButton(
-                      color: Colors.white,
-                      icon: Icon(Icons.refresh),
-                      onPressed: () {
-                        markersController.getMarkers();
-                        groupsController.getGroups();
-                      }),
-                ),
-              ),
-            ],
+                    getUserLocation().then((location) {
+                      if (location != null) {
+                        googleMapController.value!
+                            .moveCamera(CameraUpdate.newLatLng(location));
+                      }
+                    }); */
+            },
+            myLocationEnabled: true,
+            compassEnabled: true,
+            markers: allMarkers,
           );
         });
+
+    return Scaffold(
+        appBar: AppBar(title: Text("Map"), actions: [
+          FilterIcon(
+            onPressed: () {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (_) => FilterWindow()));
+            },
+            count: filteredGroups?.length,
+          ),
+          IconButton(
+              color: Colors.white,
+              icon: Icon(Icons.refresh),
+              onPressed: () {
+                markersController.getMarkers();
+                groupsController.getGroups();
+              }),
+        ]),
+        body: myGoogleMap);
   }
 }
