@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>861845615300-3c4t4b0p1u5hp712qt1v6iopgi89mujp.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.861845615300-3c4t4b0p1u5hp712qt1v6iopgi89mujp</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>861845615300-j1t04ehdbe3r2crv48o7j20tggqldkiu.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBQ6T_URZyPpFuApTTGU6d9Xsz9btdNhkI</string>
+	<key>GCM_SENDER_ID</key>
+	<string>861845615300</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>me.markwitt.mype</string>
+	<key>PROJECT_ID</key>
+	<string>mype-app</string>
+	<key>STORAGE_BUCKET</key>
+	<string>mype-app.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:861845615300:ios:d10ca22e30c6000ffd4f91</string>
+	<key>DATABASE_URL</key>
+	<string>https://mype-app.firebaseio.com</string>
+</dict>
+</plist>
